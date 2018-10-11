@@ -1,0 +1,675 @@
+---
+title: "Rossmann探索性数据分析"
+author: "何 轩"
+date: "2018.10.11"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+========================================================
+
+```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE, packages}
+# 加载你最终使用的所有组件
+# 在这个代码块的分析中。
+
+# 注意，在这个代码块中，将参数 "echo" 设为假。
+# This prevents the code from displaying in the knitted HTML output.这可以避免代码混入 HTML 输出显示。
+# 应当在文件中，对所有代码块设为 echo=FALSE。
+
+library(ggplot2)
+library(plyr)
+library(dplyr)
+library(lubridate)
+library(gridExtra)
+library(reshape2)
+
+# 支持中文注释
+Sys.setlocale('LC_ALL','C')
+# 标题居中
+theme_update(plot.title = element_text(hjust = 0.5))
+# 伪随机，用于结果重现
+set.seed(42)
+# 不使用科学计数
+options(scipen = 200)
+```
+
+```{r echo=FALSE, results='hide', Load_the_Data}
+# 加载数据
+sp <- read.csv('rossmann_sales_prediction.csv')
+
+# 特征类型转换
+
+# 批量类型转换因子变量
+# all.cols <- colnames(sp)
+# exclude.cols <- c('Sales', 'Customers', 'CompetitionDistance', 'CompetitionOpenDays', 'Promo2OpenDays')
+# col_names <- all.cols[-pmatch(exclude.cols, all.cols)]
+# sp[col_names] <- lapply(sp[col_names], factor)
+
+# numeric->int
+sp[c('CompetitionDistance', 'Promo2OpenDays')] <- lapply(sp[c('CompetitionDistance', 'Promo2OpenDays')], as.integer)
+# factor->date
+sp$Date = as.Date(sp$Date,'%Y-%m-%d')
+
+str(sp)
+summary(sp)
+```
+
+# I. 单变量绘图选择
+## 1. 销量与人均销量分析
+### 1.1 销量分布直方图
+```{r echo=FALSE, warning=FALSE, Sales_Hist}
+ggplot(sp, aes(Sales)) + 
+  geom_histogram(binwidth = 360, fill = I('cornflowerblue'), col = I('white')) +
+  scale_x_continuous(limits = c(0, 22000),
+                     breaks = seq(0, 22000, 5000)) + 
+  ggtitle('Sales Histogram') + 
+  ylab('Frequnency')
+```
+
+经过离散值和零值清洗后的日销量分布如下，分布是向左偏态，中位数在6000附近。
+
+
+### 1.2 人均销量分布直方图
+
+```{r echo=FALSE, warning=FALSE, Sales_Per_Customer_Hist}
+ggplot(sp, aes(Sales / Customers)) + 
+  geom_histogram(binwidth = 0.25, fill = I('cornflowerblue'), col = I('white')) +
+  scale_x_continuous(limits = c(0, 20),
+                     breaks = seq(0, 20, 5)) + 
+  ggtitle('Sales Per Customer Histogram') + 
+  xlab('Sales Per Customer') + 
+  ylab('Frequnency')
+```
+
+人均日销量也是近似正态分布的，中位数在9.5附近。可以看出在人均销量较小的时候分布会更多一些。说明部分消费群体具有高频小量的消费习惯，很可能是附近居民日常生活消费。
+
+
+### 1.3 按Store分组的销量中值直方图
+```{r echo=FALSE, warning=FALSE, Median_Sales_by_Store_Hist}
+median_sales_by_store <- ddply(sp, 'Store', summarise, sales.median = median(Sales))
+ggplot(median_sales_by_store, aes(sales.median)) + 
+  geom_histogram(aes(y=..density..), binwidth = 360, fill = I('cornflowerblue'), col = I('white')) +
+  stat_density(aes(y=..density..), geom='line', linetype="dashed", size=1, col = I('darkorange')) +
+  ggtitle('Median Sales Group by Store Histogram') + 
+  xlab('Median Sales Group by Store') + 
+  ylab('Frequnency')
+```
+
+按Store分组的销量中值也是近似正态分布的，在销量高位有若干离群值，说明有明星商店或者大型商店的存在，在模型训练时这部分可以单独建模融合。
+
+
+## 2. 销量-StoreType分析
+### 2.1 销量-StoreType直方图
+```{r echo=FALSE, warning=FALSE, Sales_StoreType_Hist}
+ggplot(sp, aes(Sales)) + 
+  geom_histogram(aes(y=..density..), binwidth = 360, fill = I('cornflowerblue'), col = I('white')) +
+  stat_density(aes(y=..density..), geom='line', linetype="dashed", size=1, col = I('darkorange')) +
+  scale_x_continuous(limits = c(0, 22000),
+                     breaks = seq(0, 22000, 5000)) + 
+  ggtitle('Sales Histogram') + 
+  ylab('Frequnency') + 
+  facet_wrap(~StoreType, scales = 'free')
+```
+
+### 2.2 销量-StoreType密度图
+```{r echo=FALSE, warning=FALSE, Sales_StoreType_Density}
+median_sales_by_store_type <- ddply(sp, 'StoreType', summarise, sales.median = median(Sales))
+
+ggplot(sp, aes(x = Sales)) + 
+  geom_density(aes(fill = StoreType), alpha = 0.4, size = 0.8) + 
+  geom_vline(data = median_sales_by_store_type, aes(xintercept = sales.median, color = StoreType), linetype = 'dashed', size = 0.8) + 
+  ggtitle('Sales by StoreType Density') + 
+  xlab('Sales') +
+  ylab('Density')
+```
+
+从直方图和密度图可以看出a c d是接近正态分布的，而且分布非常接近，b分布相对散乱，但是这个是b类型的整体分布，推测可能是由于成员的销量相差较大，或样本数较小，以下通过散点和箱线图来进一步分析和验证推测。
+
+### 2.3 销量-StoreType jitter和BoxPlot
+```{r echo=FALSE, warning=FALSE, Sales_StoreType_Jitter_BoxPlot}
+ggplot(sp, aes(x = StoreType, y=Sales)) + 
+  geom_jitter(alpha = 0.01) +
+  geom_boxplot(color = 'deepskyblue', fill = NA) + 
+  ggtitle('Sales by StoreType Jitter and Boxplot')
+```
+
+从散点图可以发现之前StoreTypeB分布不均的原因之一，因为b类型的样本数最小，所以整体分布不容易达到正态分布。
+
+从箱线图可以看出两点：  
+
+* Store b确实比较特殊，acd的各种统计值（四分位，中值，边界）均比较接近，但b类型明显要比其他三种的销量分布更偏高一些。  
+* 四种类型的商店都存在上界离群值，推测可能有两种情况，店铺存在较高的峰值销量，或者是明星商店存在（前面已经验证了这个推测）。
+
+下面我们进一步分析b中成员各自销量的分布情况。
+
+### 2.4 StoreType b成员商店的销量分布
+```{r echo=FALSE, results='hide', warning=FALSE, Sales_StoreType_B_FreqPoly_Density}
+#采样B中的商店看具体分布，用Freq
+unique(subset(sp, StoreType=='b')$Store)
+
+# 频率多边形
+ggplot(subset(sp, StoreType=='b'), aes(Sales)) + 
+  geom_freqpoly(binwidth = 360, color = I('cornflowerblue'), size = 1) +
+  ggtitle('Stores of StoreType b\'s Sales Frequency Polygons') + 
+  xlab('Stores of StoreType b\'s Sales') +
+  ylab('Frequnency') + 
+  facet_wrap(~Store, scales = 'free')
+
+# 密度图
+ggplot(subset(sp, StoreType=='b'), aes(Sales)) + 
+  geom_density(aes(color = factor(Store)), size = 0.7) +
+  scale_x_continuous(limits = c(0, 22000),
+                     breaks = seq(0, 22000, 5000)) + 
+  ggtitle('Stores of StoreType b\'s Sales Density') + 
+  xlab('Stores of StoreType b\'s Sales') +
+  ylab('Density') + 
+  labs(color='Store')
+
+```
+
+从频率多边形和密度图可以看出，跟我们之前的猜想一致，b类型商店各自的销量分布也是基本符合正态，只是由于样本数较小而且销量差距太大，导致整体分布比较零乱。
+
+## 3. 销量-Assortment分析
+### 3.1 销量-Assortment密度图
+```{r echo=FALSE, warning=FALSE, Sales_Assortment_Density}
+median_sales_by_assortment <- ddply(sp, 'Assortment', summarise, sales.median = median(Sales))
+
+ggplot(sp, aes(x = Sales)) + 
+  geom_density(aes(fill = Assortment), alpha=0.4, size=0.8) + 
+  geom_vline(data = median_sales_by_assortment, aes(xintercept = sales.median, color = Assortment), linetype = 'dashed', size = 0.8) + 
+  ggtitle('Sales by Assortment Density') + 
+  xlab('Sales') +
+  ylab('Density')
+```
+
+### 3.2 销量-Assortment的jitter和BoxPlot
+```{r echo=FALSE, warning=FALSE, Sales_Assortment_Jitter_BoxPlot}
+ggplot(sp, aes(x = Assortment, y = Sales)) + 
+  geom_jitter(alpha = 0.01) +
+  geom_boxplot(color = 'deepskyblue', fill = NA) + 
+  ggtitle('Sales by Assortment Jitter and BoxPlot')
+```
+
+Assortment与StoreType的分析类似，这里不再赘述，同样b样本数量较少，分布ac接近，b较为特殊，值得一提的是，Assortment的上界离群值较少。
+
+
+## 4. 销量促销分析
+### 4.1 销量-短期促销密度图 vs. 销量-长期促销密度图
+```{r echo=FALSE, warning=FALSE, Sales_Promo_Density}
+median_sales_by_promo <- ddply(sp, 'Promo', summarise, sales.median = median(Sales))
+median_sales_by_promo2 <- ddply(sp, 'Promo2', summarise, sales.median = median(Sales))
+
+p1 <- ggplot(sp, aes(x = Sales)) + 
+  geom_density(aes(fill = factor(Promo)), alpha = 0.4, size = 0.8) + 
+  geom_vline(data = median_sales_by_promo, aes(xintercept = sales.median, color = factor(Promo)), linetype = 'dashed', size = 0.8) + 
+  scale_color_manual(values = c(I('royalblue'), I('gold1'))) + 
+  scale_fill_manual(values = c(I('royalblue'), I('gold1'))) +
+  ggtitle('Sales by Promo Density') + 
+  xlab('Sales') +
+  ylab('Density') + 
+  labs(fill='Promo', color='Promo')
+
+p2 <- ggplot(sp, aes(x = Sales)) + 
+  geom_density(aes(fill = factor(Promo2)), alpha = 0.4, size = 0.8) + 
+  geom_vline(data = median_sales_by_promo2, aes(xintercept = sales.median, color = factor(Promo2)), linetype = 'dashed', size = 0.8) + 
+  scale_color_manual(values = c(I('royalblue'), I('gold1'))) + 
+  scale_fill_manual(values = c(I('royalblue'), I('gold1'))) +
+  ggtitle('Sales by Promo2 Density') + 
+  xlab('Sales') +
+  ylab('Density') + 
+  labs(fill='Promo2', color='Promo2')
+
+grid.arrange(p1, p2, ncol = 1)
+```
+
+对比长短期促销密度图可以看出，短期促销对销量的中值和分布有较大的影响，促销会带来一定程度的销量提升。而长期促销对销量提升基本无太大作用。
+
+## 5. 销量节假日分析
+### 5.1 销量-节假日密度图
+```{r echo=FALSE, warning=FALSE, Sales_Holiday_Density}
+median_sales_by_holiday <- ddply(sp, 'IsHoliday', summarise, sales.median = median(Sales))
+
+ggplot(sp, aes(x = Sales)) + 
+  geom_density(aes(fill = factor(IsHoliday)), alpha = 0.4, size = 0.8) + 
+  geom_vline(data = median_sales_by_holiday, aes(xintercept = sales.median, color = factor(IsHoliday)), linetype = 'dashed', size = 0.8) +
+  scale_color_manual(values = c(I('royalblue'), I('gold1'))) + 
+  scale_fill_manual(values = c(I('royalblue'), I('gold1'))) +
+  ggtitle('Sales by Holiday Density') + 
+  xlab('Sales') +
+  ylab('Density') + 
+  labs(fill='IsHoliday', color='IsHoliday')
+```
+
+可以看出，节假日和非节假日的密度分布相似，中值节假日稍微大一点点，证明节假日对销量的影响较小，事实上xgboost模型的主成分分析可以看出Holiday影响确实较小。（数据清洗已经整合了SchoolHoliday和StateHoliday，不再详细分析）
+
+
+## 6. 竞争分析
+### 6.1 竞争对手的对数距离频率多边形分布
+```{r echo=FALSE, warning=FALSE, Competition_Dist_Log10_FreqPoly}
+
+ggplot(sp, aes(CompetitionDistance)) + 
+  geom_freqpoly(bins = 30, col = I('cornflowerblue'), size = 2) +
+  scale_x_log10() + 
+  ggtitle('Log Competition Distance Frequency Polygon') + 
+  xlab('log(Competition Distance)') + 
+  ylab('Frequnency')
+```
+
+可以看出，竞争对手的距离对数基本是符合正态分布的。
+
+### 6.2 竞争对手开业时间密度图
+```{r echo=FALSE, warning=FALSE, CompetitionOpenYears_Density}
+ggplot(sp, aes(CompetitionOpenDays / 365)) + 
+  geom_density(fill = I('cornflowerblue'), col = I('white')) +
+  scale_x_continuous(limits = c(-1, 25),
+                     breaks = seq(0, 25, 5)) + 
+  ggtitle('Competition Open Years Density') + 
+  xlab('Competition Open Years') + 
+  ylab('Density')
+```
+
+从开业时间密度图可以看出，竞争对手的开业时间主要分布在2到5年之间，也有一部分时间为0，实际是由于未收集或者没有竞争对手造成的。
+
+## 7. 销量-周分布分析
+### 7.1 销量-DayOfWeek密度图
+```{r echo=FALSE, warning=FALSE, Sales_DayOfWeek_Density}
+median_sales_by_dow <- ddply(sp, 'DayOfWeek', summarise, sales.median = median(Sales))
+
+ggplot(sp, aes(x = Sales)) + 
+  geom_density(aes(fill = factor(DayOfWeek)), alpha = 0.4, size = 0.8) + 
+  geom_vline(data = median_sales_by_dow, aes(xintercept = sales.median, color = factor(DayOfWeek)), linetype = 'dashed', size = 0.8) + 
+  ggtitle('Sales by DayOfWeek Density') + 
+  xlab('Sales') +
+  ylab('Density') + 
+  labs(fill='DayOfWeek', color='DayOfWeek')
+```
+
+### 7.2 销量-DayOfWeek jitter
+```{r echo=FALSE, warning=FALSE, Sales_DayOfWeek_Jitter_BoxPlot}
+ggplot(sp, aes(x = factor(DayOfWeek), y = Sales)) + 
+  geom_jitter(alpha = 0.01) +
+  geom_boxplot(color = 'deepskyblue', fill = NA) + 
+  ggtitle('Sales by DayOfWeek Jitter and Density') + 
+  xlab('DayOfWeek')
+```
+
+从密度图和周箱线图可以看出，不同weekday的分布具有个体特征，尤其是周日，周日开业的商店较少，但是开业的销量普遍更高，周一分布类似但统计值不同，同样上界存在很明显的离群值，推测是由于促销和明星大型商店，后续多变量分析可以关注下。
+
+
+## 8. 采样商店分析
+### 8.1 采样商店箱线图
+```{r echo=FALSE, warning=FALSE, Sales_SampleStore_BoxPlot}
+sample_stores <- sample(sp$Store, 10)
+p1 <- ggplot(subset(sp, Store %in% sample_stores), aes(x = factor(Store), y = Sales)) + 
+  geom_boxplot() +
+  ggtitle('Sales by Sample Store Box Plot') + 
+  xlab('Store')
+
+p2 <- ggplot(subset(sp, Store %in% sample_stores), aes(x = factor(Store), y = Sales)) + 
+  geom_violin() +
+  ggtitle('Sales by Sample Store Violin') + 
+  xlab('Store')
+
+grid.arrange(p1, p2, ncol = 1)
+```
+
+从采样箱线图和小提琴图可以看出，每个商店都有一定的上界离群值，应证了上个问题中的猜测中“较高的峰值销量”可能性更大，后续多变量分析中可以关注下是否是Promo或时间带来的峰值。
+
+# II. 单变量分析
+
+### 1. 你的数据集结构是什么？  
+
+* Store - a unique Id for each store  
+* Sales - the turnover for any given day (this is what you are predicting)  
+* Date - Date of the sales. extend to DayOfWeek, Year, Month, Day  
+* Customers - the number of customers on a given day  
+* StateHoliday - indicates a state holiday. Normally all stores, with few exceptions, are closed on state holidays. Note that all schools are closed on public holidays and weekends. a = public holiday, b = Easter holiday, c = Christmas, 0 = None  
+* SchoolHoliday - indicates if the (Store, Date) was affected by the closure of public schools  
+* StoreType - differentiates between 4 different store models: a, b, c, d  
+* Assortment - describes an assortment level: a = basic, b = extra, c = extended  
+* CompetitionDistance - distance in meters to the nearest competitor store  
+* CompetitionOpenDays - gives the time the nearest competitor was opened  
+* Promo - indicates whether a store is running a promo on that day  
+* Promo2 - Promo2 is a continuing and consecutive promotion for some stores: 0 = store is not participating, 1 = store is participating  
+* Promo2OpenDays - describes date when the store started participating in Promo2  
+* PromoInterval - describes the consecutive intervals Promo2 is started, naming the months the promotion is started anew. E.g. "Feb,May,Aug,Nov" means each round starts in February, May, August, November of any given year for that store  
+
+### 2. 你的数据集内感兴趣的主要特性有哪些？
+影响销量的特性：包括时间序列特征，商店类型（Store, StoreType, Assortment），促销，竞争，节假日等。
+
+### 3. 根据数据集内已有变量，你是否创建了任何新变量？在已经探究的特性中，是否存在任何异常分布？你是否对数据进行一些操作，如清洁、调整或改变数据的形式？如果是，你为什么会这样做？
+由于项目重点关注EDA分析，因此使用的数据集已经做了大部分数据清洗，以及一定的特征工程。数据清洗工作包括缺失值处理，异常值修复，离群值移除等。做了一定的特征提取和聚合。
+
+# III. 双变量绘图选择
+
+### 1. 顾客数和销量散点图
+```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE, Sales_Customer_Scatter}
+ggplot(sp, aes(x = Customers, y = Sales)) + 
+  geom_point(alpha = 0.01) +
+  geom_smooth(method = lm) +
+  geom_smooth(color = 'yellow') +
+  ggtitle('Customer-Sales Scatter Points')
+  
+cor.test(sp$Customers, sp$Sales)
+```
+
+可以看出Sales和Customers具有非常强的正相关性，相关系数为0.798。特征工程中可以考虑加入人均销量相关的特征聚合。
+
+
+### 2. 采样销量的整体时间走势
+```{r echo=FALSE, warning=FALSE, Sample_Sales_Time}
+sample_stores <- sample(sp$Store, 6)
+
+ggplot(subset(sp, Store %in% sample_stores), aes(x = Date, y = Sales)) + 
+  geom_point(alpha = 0.1) +
+  ggtitle('Sample Sales Time Trends') + 
+  facet_wrap(~Store, ncol = 3) + 
+  xlab('Years')
+```
+
+可以粗略看出，销量分布具有时间周期性，各个商店具有较强的个体特征。最终模型的主成分分析也会看出Store对Sales的影响很大。
+
+
+### 3. 采样销量月走势
+```{r echo=FALSE, results='hide', warning=FALSE, Sample_Sales_Month}
+median_sales_by_month_store <- ddply(sp, c('Month', 'Store'), summarise, sales.median = median(Sales))
+
+ggplot(subset(median_sales_by_month_store, Store %in% sample_stores), aes(x = as.integer(Month), y = sales.median, color = factor(Store), shape = factor(Store))) +
+  geom_point(size=3) +
+  geom_line(size=1) +
+  ggtitle('Sample Store Monthly Sales Trends') +
+  scale_x_continuous(limits = c(1, 12), breaks = seq(0, 12, 2)) + 
+  xlab('Month') + 
+  ylab('Median Sales') +
+  labs(color='Store', shape='Store') +
+  theme(legend.position="bottom", legend.box = "horizontal")
+```
+
+不同Store的整体月走势是相似的，12月销量最高，推测是圣诞新年促销导致的，89月销量是全年低谷。走势细节上存在个体特征。
+
+
+### 4. 采量销量周走势
+```{r echo=FALSE, results='hide', warning=FALSE, Sample_Sales_DOW}
+median_sales_by_dow_store <- ddply(sp, c('DayOfWeek', 'Store'), summarise, sales.median = median(Sales))
+
+ggplot(subset(median_sales_by_dow_store, Store %in% sample_stores), aes(x = as.integer(DayOfWeek), y = sales.median, color = factor(Store), shape = factor(Store))) +
+  geom_point(size=3) +
+  geom_line(size=1) +
+  scale_x_continuous(limits = c(1, 7), breaks = seq(1, 7, 1)) + 
+  ggtitle('Sample Store DayOfWeek Sales Trends') +
+  xlab('Day Of Week') + 
+  ylab('Median Sales') +
+  labs(color='Store', shape='Store') +
+  theme(legend.position="bottom", legend.box = "horizontal")
+```
+
+大部分商店周日是不营业的，周一的销量通常是最高的，原因也可能是受周日不营业的影响。不同商店的周销量走势同样具有共通性。
+
+### 5. 竞争对手开业一年内对销量的影响
+```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE, Competition_Open_Around_Year}
+ggplot(subset(sp, CompetitionOpenDays>0 & CompetitionOpenDays<=365), aes(x = CompetitionOpenDays, y=Sales)) +
+    geom_smooth() + 
+    ggtitle("Competition Opening around a Year")
+```
+
+可以看出，当竞争对手刚开业时，会对销量有较大的冲击，50天时到达最低谷，然后开始回暖，但在一两年时间内对销量继续产生负面效应。
+
+### 6. 竞争对手距离与销量条件均值分析
+```{r echo=FALSE, warning=FALSE, message=FALSE, Median_Sales_Competition_Distance_Scatter}
+median_sales_cd_by_store <- ddply(sp, 'Store', summarise, sales.median = median(Sales), cd = median(CompetitionDistance))
+
+ggplot(median_sales_cd_by_store, aes(x = cd, y = sales.median)) + 
+  geom_point() +
+  scale_x_log10() + 
+  scale_y_log10() +
+  ggtitle('Median Sales - Competition Distance Log Scatters') + 
+  geom_smooth() +
+  xlab('log(Competition Distance)') +
+  ylab('log(Median Sales by Store)')
+```
+
+竞争对手距离对于平均销量有较小的影响，当距离较小时平均销量最大，可以推测这是因为距离较小意味着一般是繁华的市区，导致附近的商店定价和销量比较高，或者可以理解成竞争压力导致的正面效应。然后距离到10000的时间，平均销量也是比较高的，说明这是竞争最佳距离，太近了会导致竞争激烈，太远导致竞争压力过小。从分布上讲，大部分的竞争对手距离分布在1000-10000之间。
+
+# IV. 双变量分析
+
+### 1. 探讨你在这部分探究中观察到的一些关系。这些感兴趣的特性与数据集内其他特性有什么区别？
+这些感兴趣的特性与目标特征收的相关性更强，其他特性如节假日特征与销量的相关性较弱。（详见单变量分析）
+
+### 2. 你是否观察到目标特性与其他特性之间的有趣关系？
+销量作为目标特性，与时间序列相关性很强，周和月都表现出了明显的周期性特征，和商店类型StoreType和Assortment，促销信息，竞争信息也具有很强的相关性。每个商店还具有自身的个体特征。
+
+### 3. 你发现最强的关系是什么？
+销量与顾客数具有非常强的正相关性，相关系数为0.798。特征工程中可以考虑加入人均销量相关的特征聚合。
+
+# V. 多变量绘图选择
+
+### 1. Assortment-促销-月销量走势图
+```{r echo=FALSE, results='hide', warning=FALSE, Month_Assortment_Promo_Sales_Line}
+median_sales_by_month_assortment_promo <- ddply(sp, c('Month', 'Assortment', 'Promo'), summarise, sales.median = median(Sales))
+
+ggplot(median_sales_by_month_assortment_promo, aes(x = as.integer(Month), y = sales.median, color = Assortment)) +
+  geom_point() +
+  geom_line() +
+  scale_x_continuous(limits = c(1, 12), breaks = seq(0, 12, 2)) + 
+  ggtitle('Assortment-Promo Monthly Sales Trends') +
+  xlab('Month') + 
+  ylab('Median Sales') +
+  facet_grid(vars(Promo), vars(Assortment)) +
+  theme(legend.position="bottom", legend.box = "horizontal")
+```
+
+可以看出促销的效果还是不错的，促销期间的销量整体都是高于不促销的，只是对于Assortment B促销的提升最小。按照描述a=basic, b=extra, c=extended。整体走势也是类似。12月销量最高，推测是圣诞新年促销导致的，8 9 10月销量是全年低谷，同样可能是受圣诞影响。extra商店略有不同，从9月开始销量一直在逐月攀升。
+
+### 2. StoreType-DOW-月销量走势图
+```{r echo=FALSE, results='hide', warning=FALSE, Month_DayOfWeek_StoreType_Sales_Line}
+median_sales_by_month_dow_store_type <- ddply(sp, c('Month', 'DayOfWeek', 'StoreType'), summarise, sales.median = median(Sales))
+
+ggplot(median_sales_by_month_dow_store_type, aes(x = as.integer(Month), y = sales.median, color = StoreType)) +
+  geom_point() +
+  geom_line() +
+  scale_x_continuous(limits = c(1, 12), breaks = seq(0, 12, 2)) + 
+  ggtitle('StoreType-DayOfWeek Monthly Sales Trends') +
+  xlab('Month') + 
+  ylab('Median Sales') +
+  facet_grid(vars(StoreType), vars(DayOfWeek)) +
+  theme(legend.position="bottom", legend.box = "horizontal")
+```
+
+可以得出以下结论：  
+
+* C类商店周日都是不营业的，D类商店从10月到12月周日是不营业的；  
+* 即使周末开业的商店销量也不如平时（B类除外）；  
+* B类商店的销量要远高于另外三类；  
+* 不同的StoreType和DayOfWeek的月走势是相似的，12月销量最高，推测是圣诞新年促销导致的，89月销量是全年低谷。  
+
+
+### 3. StoreType和Assortment销量时间序列分析
+```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE, StoreType_Assortment_Time_Trends}
+ggplot(sp, aes(x = Date, y = Sales, color = StoreType)) + 
+  geom_smooth(size = 2) + 
+  theme(legend.position = 'bottom') + 
+  ggtitle("StoreType-Sales Time Trends") +
+  xlab("Year")
+# p2 <- ggplot(sp, aes(x = Date, y = Customers, color = StoreType)) + 
+#   geom_smooth(size = 2) + 
+#   theme(legend.position = 'bottom')
+ggplot(sp, aes(x = Date, y = Sales, color = Assortment)) + 
+  geom_smooth(size = 2) + 
+  theme(legend.position = 'bottom') + 
+  ggtitle("Assortment-Sales Time Trends") +
+  xlab("Year")
+# p4 <- ggplot(sp, aes(x = Date, y = Customers, color = Assortment)) + 
+#   geom_smooth(size = 2) + 
+#   theme(legend.position = 'bottom')
+
+# g_legend<-function(a.gplot){
+#   tmp <- ggplot_gtable(ggplot_build(a.gplot))
+#   leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+#   legend <- tmp$grobs[[leg]]
+#   return(legend)}
+# 
+# mylegend<-g_legend(p1)
+
+# grid.arrange(p1, p2, p3, p4, nrow=2, heights=c(50, 50))
+```
+
+跟之前的分析类似，StoreType b和Assortment b的走势与其他类型区别较大，剩余类型走势相似。
+在做特征工程时，可考虑针对StoreType b和Assortment b额外建模。
+
+### 4. 周日销量对比分析
+```{r echo=FALSE, results='hide', warning=FALSE, Sunday_Sales_Comparison}
+ggplot(subset(sp, Store == 262), aes(x = Date, y = Sales, color = factor(DayOfWeek == 7), shape = factor(DayOfWeek == 7))) + 
+  geom_point(size = 2.8, alpha = 0.9) + 
+  ggtitle("Sales of store 262 (True if sunday)") + 
+  labs(color='Sunday', shape='Sunday')
+```
+
+可以看出，对于少量周日开业的商店，销量会比平时更高，这可能也是这些店选择周日继续营业的原因，已经做过充分的盈亏调研。
+
+### 5. 关键特征Heatmap
+```{r echo=FALSE, results='hide', warning=FALSE, Core_Features_Heatmap}
+heat_sp <- data.frame(sp)
+cols.exclude <- c('Date', 'StateHoliday', 'SchoolHoliday', 'IsInPromo2Month')
+
+heat_sp$StoreType <- revalue(x = heat_sp$StoreType, c('a' = 1, 'b' = 2, 'c' = 3, 'd' = 4))
+heat_sp$Assortment <- revalue(x = heat_sp$Assortment, c('a' = 1, 'b' = 2, 'c' = 3))
+
+heat_sp$StoreType <- as.integer(heat_sp$StoreType)
+heat_sp$Assortment <- as.integer(heat_sp$Assortment)
+
+heat_sp <- heat_sp[, ! names(heat_sp) %in% cols.exclude, drop = F]
+
+cormat <- round(cor(heat_sp), 2)
+melted_cormat <- melt(cormat)
+
+# Get upper triangle of the correlation matrix
+get_upper_tri <- function(cormat){
+  cormat[lower.tri(cormat)]<- NA
+  return(cormat)
+}
+
+upper_tri <- get_upper_tri(cormat)
+
+melted_cormat <- melt(upper_tri, na.rm = TRUE)
+# Heatmap
+ggplot(data = melted_cormat, aes(Var2, Var1, fill = value)) +
+ geom_tile(color = "white") +
+ scale_fill_gradient2(low = "blue", high = "red", mid = "white", midpoint = 0, limit = c(-1,1), space = "Lab", name="Sales Prediction\nCorrelation") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, size = 12, hjust = 1)) +
+  coord_fixed() +
+  theme(axis.title.x = element_blank(), axis.title.y = element_blank(), panel.grid.major = element_blank(), panel.border = element_blank(), panel.background = element_blank(), axis.ticks = element_blank(), legend.justification = c(1, 0), legend.position = c(0.6, 0.7), legend.direction = "horizontal") +
+  guides(fill = guide_colorbar(barwidth = 7, barheight = 1, title.position = "top", title.hjust = 0.5)) + 
+  ggtitle('Core Features Heatmap')
+```
+
+从热力图可以看出:    
+
+* 销量与顾客数有很强的正相关性，和促销也有较强的正相关；  
+* 另外跟节假日，竞争对手信息有一定的相关性；  
+* 跟Promo2长期促销的相关性较弱；  
+* Promo跟DayOfWeek有较强的负相关，也就意味着周末的促销效果并不好；  
+* 相关性最强的都是特征衍化产生的，隶属于同一个特征群体，如销量相关，促销相关，时间相关；  
+* 可以看出Sales跟所有用于训练的特征相关性都较强，说明特征工程的优化效果还是不错的。  
+
+其实热力图分析存在一定的弊病，因为某些特征是因子变量，如果按照int来做相关性分析是最不合理的。如图中Store和Sales的相关性很弱，实际上从xgboost的特征重要性分析可以看出Store对销量的影响力是很大的。
+
+# VI. 多变量分析
+
+###  1. 探讨你在这部分探究中观察到的一些关系。通过观察感兴趣的特性，是否存在相互促进的特性？这些特性之间是否存在有趣或惊人的联系呢？
+我探究了时间特征如月销量走势，周销量走势，商店类型StoreType和Assortment，周日销量特殊性分析，以及关键特征热力图分析。他们与目标销量特征，以及相互间都具有促进的作用。其中StoreType b和Assortment b，以及周日具有特殊性的规律存在，因此在特征工程和模型建模时，这一块需要额外处理。
+
+### 2. 你是否创建过数据集的任何模型？讨论你模型的优缺点。
+基于EDA分析，对于相关性较强和个体明显的特征做了详细的特征工程，然后创建了xgboost集成模型，最终在kaggle上取得了第12名的好成绩。  
+优点：可以灵活处理各种类型的数据，包括连续值和离散值；在相对少的调参时间情况下，预测的准备率也可以比较高。；使用一些健壮的损失函数，对异常值的鲁棒性非常强。  
+缺点：训练时间过长，不适合高维稀疏特征。
+
+------
+
+# VII. 定稿图与总结
+
+### 1. 绘图一
+```{r echo=FALSE, warning=FALSE, message=FALSE, Median_Sales_Competition_Distance_Scatter2}
+ggplot(median_sales_cd_by_store, aes(x = cd, y = sales.median)) + 
+  geom_point() +
+  scale_x_log10() + 
+  scale_y_log10() +
+  ggtitle('Median Sales - Competition Distance Log Scatters') + 
+  geom_smooth() +
+  xlab('log(Competition Distance)') +
+  ylab('log(Median Sales by Store)')
+```
+
+### 2. 描述一
+竞争-销量分析：  
+
+* 竞争对手距离对于平均销量有较小的影响，当距离较小时平均销量最大，可以推测这是因为距离较小意味着一般是繁华的市区，导致附近的商店定价和销量比较高，或者可以理解成竞争压力导致的正面效应。  
+* 然后距离到10000的时间，平均销量也是比较高的，说明这是竞争最佳距离，太近了会导致竞争激烈，太远导致竞争压力过小。  
+* 从分布上讲，大部分的竞争对手距离分布在1000-10000之间。
+
+### 3. 绘图二
+```{r echo=FALSE, results='hide', warning=FALSE, Month_DayOfWeek_StoreType_Sales_Line2}
+ggplot(median_sales_by_month_dow_store_type, aes(x = as.integer(Month), y = sales.median, color = StoreType)) +
+  geom_point() +
+  geom_line() +
+  scale_x_continuous(limits = c(1, 12), breaks = seq(0, 12, 2)) + 
+  ggtitle('StoreType-DayOfWeek Monthly Sales Trends') +
+  xlab('Month') + 
+  ylab('Median Sales') +
+  facet_grid(vars(StoreType), vars(DayOfWeek)) +
+  theme(legend.position="bottom", legend.box = "horizontal")
+```
+
+### 4. 描述二
+商店类型-时间序列分析：  
+
+* C类商店周日都是不营业的，D类商店从10月到12月周日是不营业的；  
+* 即使周末开业的商店销量也不如平时（B类除外）；  
+* B类商店的销量要远高于另外三类；  
+* 不同的StoreType和DayOfWeek的月走势是相似的，12月销量最高，推测是圣诞新年促销导致的，89月销量是全年低谷。  
+
+
+### 5. 绘图三
+```{r echo=FALSE, results='hide', warning=FALSE, Core_Features_Heatmap2}
+# Heatmap
+ggplot(data = melted_cormat, aes(Var2, Var1, fill = value)) +
+ geom_tile(color = "white") +
+ scale_fill_gradient2(low = "blue", high = "red", mid = "white", midpoint = 0, limit = c(-1,1), space = "Lab", name="Sales Prediction\nCorrelation") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, size = 12, hjust = 1)) +
+  coord_fixed() +
+  theme(axis.title.x = element_blank(), axis.title.y = element_blank(), panel.grid.major = element_blank(), panel.border = element_blank(), panel.background = element_blank(), axis.ticks = element_blank(), legend.justification = c(1, 0), legend.position = c(0.6, 0.7), legend.direction = "horizontal") +
+  guides(fill = guide_colorbar(barwidth = 7, barheight = 1, title.position = "top", title.hjust = 0.5)) + 
+  ggtitle('Core Features Heatmap')
+```
+
+### 6. 描述三
+特征相关性热力图分析:    
+
+* 销量与顾客数有很强的正相关性，和促销也有较强的正相关；  
+* 另外跟节假日，竞争对手信息有一定的相关性；  
+* 跟Promo2长期促销的相关性较弱；  
+* Promo跟DayOfWeek有较强的负相关，也就意味着周末的促销效果并不好；  
+* 相关性最强的都是特征衍化产生的，隶属于同一个特征群体，如销量相关，促销相关，时间相关；  
+* 可以看出Sales跟所有用于训练的特征相关性都较强，说明特征工程的优化效果还是不错的。    
+其实热力图分析存在一定的弊病，因为某些特征是因子变量，如果按照int来做相关性分析是最不合理的。如图中Store和Sales的相关性很弱，实际上从xgboost的特征重要性分析可以看出Store对销量的影响力是很大的。
+
+------
+
+# VIII. 反思
+
+###  1. 在分析过程中遇到了什么困难？
+对R语言不熟悉，所以对数据操作上遇到了不少困难，所以某些更高级的可视化分析无法去完成，然后对于grid.arrange中ggplot组合也不是很熟悉，本来想将多张图整合到一起，但在尺寸分割和共享图例上遇到了困难。
+
+###  2. 在分析过程中取得了哪些成功？
+这是Kaggle上的一个基于时间序列预测的项目，通过EDA分析，帮助发现特征中潜在的规律，并对于特征工程和模型建模起到了非常重要的作用。比如：  
+
+* 发现某些特征对销量的贡献度较小，无需再深入做特征工程，如节假日信息。
+* 发现了某些重要特征，并在特征工程中，重点做这些特征间的聚合，如时间序列信息，顾客数的强相关性等。
+* 发现了StoreType b和Assortment b，以及周日具有特殊性的规律存在，需要额外建模融合。
+
+###  3. 将来工作中还可以通过哪些方式使分析更丰富（如：附加数据和分析）？   
+* 更高级的EDA分析，如多特征聚合分析，专门的时间序列分析工具等。
+* 结合额外的数据集，如商店的天气和国家信息，以及google trends。
+* EDA为特征工程提供了方向，产生新的工程特征后，继续做EDA分析，如此循环往复。
