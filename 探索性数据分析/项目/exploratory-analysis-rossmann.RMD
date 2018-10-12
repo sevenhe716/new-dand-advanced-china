@@ -47,7 +47,8 @@ sp <- read.csv('rossmann_sales_prediction.csv')
 # sp[col_names] <- lapply(sp[col_names], factor)
 
 # numeric->int
-sp[c('CompetitionDistance', 'Promo2OpenDays')] <- lapply(sp[c('CompetitionDistance', 'Promo2OpenDays')], as.integer)
+sp[c('CompetitionDistance', 'Promo2OpenDays')] <- 
+  lapply(sp[c('CompetitionDistance', 'Promo2OpenDays')], as.integer)
 # factor->date
 sp$Date = as.Date(sp$Date,'%Y-%m-%d')
 
@@ -59,6 +60,7 @@ summary(sp)
 ## 1. 销量与人均销量分析
 ### 1.1 销量分布直方图
 ```{r echo=FALSE, warning=FALSE, Sales_Hist}
+# 销量直方图
 ggplot(sp, aes(Sales)) + 
   geom_histogram(binwidth = 360, fill = I('cornflowerblue'), col = I('white')) +
   scale_x_continuous(limits = c(0, 22000),
@@ -73,6 +75,7 @@ ggplot(sp, aes(Sales)) +
 ### 1.2 人均销量分布直方图
 
 ```{r echo=FALSE, warning=FALSE, Sales_Per_Customer_Hist}
+# 人均销量直方图
 ggplot(sp, aes(Sales / Customers)) + 
   geom_histogram(binwidth = 0.25, fill = I('cornflowerblue'), col = I('white')) +
   scale_x_continuous(limits = c(0, 20),
@@ -87,10 +90,15 @@ ggplot(sp, aes(Sales / Customers)) +
 
 ### 1.3 按Store分组的销量中值直方图
 ```{r echo=FALSE, warning=FALSE, Median_Sales_by_Store_Hist}
-median_sales_by_store <- ddply(sp, 'Store', summarise, sales.median = median(Sales))
+# sales median group by Store
+median_sales_by_store <- ddply(sp, 'Store', summarise, 
+                               sales.median = median(Sales))
+# 按Store分组的销量中值直方图
 ggplot(median_sales_by_store, aes(sales.median)) + 
-  geom_histogram(aes(y=..density..), binwidth = 360, fill = I('cornflowerblue'), col = I('white')) +
-  stat_density(aes(y=..density..), geom='line', linetype="dashed", size=1, col = I('darkorange')) +
+  geom_histogram(aes(y=..density..), binwidth = 360, 
+                 fill = I('cornflowerblue'), col = I('white')) +
+  stat_density(aes(y=..density..), geom='line', 
+               linetype="dashed", size=1, col = I('darkorange')) +
   ggtitle('Median Sales Group by Store Histogram') + 
   xlab('Median Sales Group by Store') + 
   ylab('Frequnency')
@@ -102,9 +110,12 @@ ggplot(median_sales_by_store, aes(sales.median)) +
 ## 2. 销量-StoreType分析
 ### 2.1 销量-StoreType直方图
 ```{r echo=FALSE, warning=FALSE, Sales_StoreType_Hist}
+# 销量-StoreType直方图
 ggplot(sp, aes(Sales)) + 
-  geom_histogram(aes(y=..density..), binwidth = 360, fill = I('cornflowerblue'), col = I('white')) +
-  stat_density(aes(y=..density..), geom='line', linetype="dashed", size=1, col = I('darkorange')) +
+  geom_histogram(aes(y=..density..), binwidth = 360, 
+                 fill = I('cornflowerblue'), col = I('white')) +
+  stat_density(aes(y=..density..), geom='line', 
+               linetype="dashed", size=1, col = I('darkorange')) +
   scale_x_continuous(limits = c(0, 22000),
                      breaks = seq(0, 22000, 5000)) + 
   ggtitle('Sales Histogram') + 
@@ -114,11 +125,15 @@ ggplot(sp, aes(Sales)) +
 
 ### 2.2 销量-StoreType密度图
 ```{r echo=FALSE, warning=FALSE, Sales_StoreType_Density}
-median_sales_by_store_type <- ddply(sp, 'StoreType', summarise, sales.median = median(Sales))
-
+# median sales group by StoreType
+median_sales_by_store_type <- ddply(sp, 'StoreType', summarise, 
+                                    sales.median = median(Sales))
+# 销量-StoreType密度图
 ggplot(sp, aes(x = Sales)) + 
   geom_density(aes(fill = StoreType), alpha = 0.4, size = 0.8) + 
-  geom_vline(data = median_sales_by_store_type, aes(xintercept = sales.median, color = StoreType), linetype = 'dashed', size = 0.8) + 
+  geom_vline(data = median_sales_by_store_type, 
+             aes(xintercept = sales.median, color = StoreType), 
+             linetype = 'dashed', size = 0.8) + 
   ggtitle('Sales by StoreType Density') + 
   xlab('Sales') +
   ylab('Density')
@@ -128,6 +143,7 @@ ggplot(sp, aes(x = Sales)) +
 
 ### 2.3 销量-StoreType jitter和BoxPlot
 ```{r echo=FALSE, warning=FALSE, Sales_StoreType_Jitter_BoxPlot}
+# 销量-StoreType jitter和BoxPlot
 ggplot(sp, aes(x = StoreType, y=Sales)) + 
   geom_jitter(alpha = 0.01) +
   geom_boxplot(color = 'deepskyblue', fill = NA) + 
@@ -145,7 +161,7 @@ ggplot(sp, aes(x = StoreType, y=Sales)) +
 
 ### 2.4 StoreType b成员商店的销量分布
 ```{r echo=FALSE, results='hide', warning=FALSE, Sales_StoreType_B_FreqPoly_Density}
-#采样B中的商店看具体分布，用Freq
+#采样B中的商店子集
 unique(subset(sp, StoreType=='b')$Store)
 
 # 频率多边形
@@ -154,6 +170,7 @@ ggplot(subset(sp, StoreType=='b'), aes(Sales)) +
   ggtitle('Stores of StoreType b\'s Sales Frequency Polygons') + 
   xlab('Stores of StoreType b\'s Sales') +
   ylab('Frequnency') + 
+  scale_x_continuous(breaks = scales::pretty_breaks(3), limits = c(0, NA)) +
   facet_wrap(~Store, scales = 'free')
 
 # 密度图
@@ -161,6 +178,7 @@ ggplot(subset(sp, StoreType=='b'), aes(Sales)) +
   geom_density(aes(color = factor(Store)), size = 0.7) +
   scale_x_continuous(limits = c(0, 22000),
                      breaks = seq(0, 22000, 5000)) + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   ggtitle('Stores of StoreType b\'s Sales Density') + 
   xlab('Stores of StoreType b\'s Sales') +
   ylab('Density') + 
@@ -173,11 +191,16 @@ ggplot(subset(sp, StoreType=='b'), aes(Sales)) +
 ## 3. 销量-Assortment分析
 ### 3.1 销量-Assortment密度图
 ```{r echo=FALSE, warning=FALSE, Sales_Assortment_Density}
-median_sales_by_assortment <- ddply(sp, 'Assortment', summarise, sales.median = median(Sales))
+# median sales group by assortment
+median_sales_by_assortment <- ddply(sp, 'Assortment', 
+                                    summarise, sales.median = median(Sales))
 
+# 销量-Assortment密度图
 ggplot(sp, aes(x = Sales)) + 
   geom_density(aes(fill = Assortment), alpha=0.4, size=0.8) + 
-  geom_vline(data = median_sales_by_assortment, aes(xintercept = sales.median, color = Assortment), linetype = 'dashed', size = 0.8) + 
+  geom_vline(data = median_sales_by_assortment, 
+             aes(xintercept = sales.median, color = Assortment), 
+             linetype = 'dashed', size = 0.8) + 
   ggtitle('Sales by Assortment Density') + 
   xlab('Sales') +
   ylab('Density')
@@ -185,6 +208,7 @@ ggplot(sp, aes(x = Sales)) +
 
 ### 3.2 销量-Assortment的jitter和BoxPlot
 ```{r echo=FALSE, warning=FALSE, Sales_Assortment_Jitter_BoxPlot}
+# 销量-Assortment的jitter和BoxPlot
 ggplot(sp, aes(x = Assortment, y = Sales)) + 
   geom_jitter(alpha = 0.01) +
   geom_boxplot(color = 'deepskyblue', fill = NA) + 
@@ -197,12 +221,19 @@ Assortment与StoreType的分析类似，这里不再赘述，同样b样本数量
 ## 4. 销量促销分析
 ### 4.1 销量-短期促销密度图 vs. 销量-长期促销密度图
 ```{r echo=FALSE, warning=FALSE, Sales_Promo_Density}
-median_sales_by_promo <- ddply(sp, 'Promo', summarise, sales.median = median(Sales))
-median_sales_by_promo2 <- ddply(sp, 'Promo2', summarise, sales.median = median(Sales))
+# median sales group by promo
+median_sales_by_promo <- ddply(sp, 'Promo', summarise, 
+                               sales.median = median(Sales))
+# median sales group by promo2
+median_sales_by_promo2 <- ddply(sp, 'Promo2', summarise, 
+                                sales.median = median(Sales))
 
+# 销量-短期促销密度图
 p1 <- ggplot(sp, aes(x = Sales)) + 
   geom_density(aes(fill = factor(Promo)), alpha = 0.4, size = 0.8) + 
-  geom_vline(data = median_sales_by_promo, aes(xintercept = sales.median, color = factor(Promo)), linetype = 'dashed', size = 0.8) + 
+  geom_vline(data = median_sales_by_promo, 
+             aes(xintercept = sales.median, color = factor(Promo)), 
+             linetype = 'dashed', size = 0.8) + 
   scale_color_manual(values = c(I('royalblue'), I('gold1'))) + 
   scale_fill_manual(values = c(I('royalblue'), I('gold1'))) +
   ggtitle('Sales by Promo Density') + 
@@ -210,9 +241,12 @@ p1 <- ggplot(sp, aes(x = Sales)) +
   ylab('Density') + 
   labs(fill='Promo', color='Promo')
 
+# 销量-长期促销密度图
 p2 <- ggplot(sp, aes(x = Sales)) + 
   geom_density(aes(fill = factor(Promo2)), alpha = 0.4, size = 0.8) + 
-  geom_vline(data = median_sales_by_promo2, aes(xintercept = sales.median, color = factor(Promo2)), linetype = 'dashed', size = 0.8) + 
+  geom_vline(data = median_sales_by_promo2, 
+             aes(xintercept = sales.median, color = factor(Promo2)), 
+             linetype = 'dashed', size = 0.8) + 
   scale_color_manual(values = c(I('royalblue'), I('gold1'))) + 
   scale_fill_manual(values = c(I('royalblue'), I('gold1'))) +
   ggtitle('Sales by Promo2 Density') + 
@@ -220,6 +254,7 @@ p2 <- ggplot(sp, aes(x = Sales)) +
   ylab('Density') + 
   labs(fill='Promo2', color='Promo2')
 
+# 合并两张图
 grid.arrange(p1, p2, ncol = 1)
 ```
 
@@ -228,11 +263,16 @@ grid.arrange(p1, p2, ncol = 1)
 ## 5. 销量节假日分析
 ### 5.1 销量-节假日密度图
 ```{r echo=FALSE, warning=FALSE, Sales_Holiday_Density}
-median_sales_by_holiday <- ddply(sp, 'IsHoliday', summarise, sales.median = median(Sales))
+# median sales group by holiday
+median_sales_by_holiday <- ddply(sp, 'IsHoliday', summarise, 
+                                 sales.median = median(Sales))
 
+# 销量-节假日密度图
 ggplot(sp, aes(x = Sales)) + 
   geom_density(aes(fill = factor(IsHoliday)), alpha = 0.4, size = 0.8) + 
-  geom_vline(data = median_sales_by_holiday, aes(xintercept = sales.median, color = factor(IsHoliday)), linetype = 'dashed', size = 0.8) +
+  geom_vline(data = median_sales_by_holiday, 
+             aes(xintercept = sales.median, color = factor(IsHoliday)), 
+             linetype = 'dashed', size = 0.8) +
   scale_color_manual(values = c(I('royalblue'), I('gold1'))) + 
   scale_fill_manual(values = c(I('royalblue'), I('gold1'))) +
   ggtitle('Sales by Holiday Density') + 
@@ -247,7 +287,7 @@ ggplot(sp, aes(x = Sales)) +
 ## 6. 竞争分析
 ### 6.1 竞争对手的对数距离频率多边形分布
 ```{r echo=FALSE, warning=FALSE, Competition_Dist_Log10_FreqPoly}
-
+# 竞争对手的对数距离频率多边形分布
 ggplot(sp, aes(CompetitionDistance)) + 
   geom_freqpoly(bins = 30, col = I('cornflowerblue'), size = 2) +
   scale_x_log10() + 
@@ -260,6 +300,7 @@ ggplot(sp, aes(CompetitionDistance)) +
 
 ### 6.2 竞争对手开业时间密度图
 ```{r echo=FALSE, warning=FALSE, CompetitionOpenYears_Density}
+# 竞争对手开业时间密度图
 ggplot(sp, aes(CompetitionOpenDays / 365)) + 
   geom_density(fill = I('cornflowerblue'), col = I('white')) +
   scale_x_continuous(limits = c(-1, 25),
@@ -274,11 +315,16 @@ ggplot(sp, aes(CompetitionOpenDays / 365)) +
 ## 7. 销量-周分布分析
 ### 7.1 销量-DayOfWeek密度图
 ```{r echo=FALSE, warning=FALSE, Sales_DayOfWeek_Density}
-median_sales_by_dow <- ddply(sp, 'DayOfWeek', summarise, sales.median = median(Sales))
+# median sales group by DayOfWeek
+median_sales_by_dow <- ddply(sp, 'DayOfWeek', summarise, 
+                             sales.median = median(Sales))
 
+# 销量-DayOfWeek密度图
 ggplot(sp, aes(x = Sales)) + 
   geom_density(aes(fill = factor(DayOfWeek)), alpha = 0.4, size = 0.8) + 
-  geom_vline(data = median_sales_by_dow, aes(xintercept = sales.median, color = factor(DayOfWeek)), linetype = 'dashed', size = 0.8) + 
+  geom_vline(data = median_sales_by_dow, 
+             aes(xintercept = sales.median, color = factor(DayOfWeek)), 
+             linetype = 'dashed', size = 0.8) + 
   ggtitle('Sales by DayOfWeek Density') + 
   xlab('Sales') +
   ylab('Density') + 
@@ -287,6 +333,7 @@ ggplot(sp, aes(x = Sales)) +
 
 ### 7.2 销量-DayOfWeek jitter
 ```{r echo=FALSE, warning=FALSE, Sales_DayOfWeek_Jitter_BoxPlot}
+# 销量-DayOfWeek jitter
 ggplot(sp, aes(x = factor(DayOfWeek), y = Sales)) + 
   geom_jitter(alpha = 0.01) +
   geom_boxplot(color = 'deepskyblue', fill = NA) + 
@@ -298,19 +345,26 @@ ggplot(sp, aes(x = factor(DayOfWeek), y = Sales)) +
 
 
 ## 8. 采样商店分析
-### 8.1 采样商店箱线图
+### 8.1 采样商店箱线图和小提琴图
 ```{r echo=FALSE, warning=FALSE, Sales_SampleStore_BoxPlot}
+# 采样10个商店
 sample_stores <- sample(sp$Store, 10)
-p1 <- ggplot(subset(sp, Store %in% sample_stores), aes(x = factor(Store), y = Sales)) + 
+
+# 采样商店箱线图
+p1 <- ggplot(subset(sp, Store %in% sample_stores), 
+             aes(x = factor(Store), y = Sales)) + 
   geom_boxplot() +
   ggtitle('Sales by Sample Store Box Plot') + 
   xlab('Store')
 
-p2 <- ggplot(subset(sp, Store %in% sample_stores), aes(x = factor(Store), y = Sales)) + 
+# 采样商店小提琴图
+p2 <- ggplot(subset(sp, Store %in% sample_stores), 
+             aes(x = factor(Store), y = Sales)) + 
   geom_violin() +
   ggtitle('Sales by Sample Store Violin') + 
   xlab('Store')
 
+# 合并两张图
 grid.arrange(p1, p2, ncol = 1)
 ```
 
@@ -343,14 +397,16 @@ grid.arrange(p1, p2, ncol = 1)
 
 # III. 双变量绘图选择
 
-### 1. 顾客数和销量散点图
+### 1. 顾客数-销量散点图
 ```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE, Sales_Customer_Scatter}
+# 顾客数-销量散点图
 ggplot(sp, aes(x = Customers, y = Sales)) + 
   geom_point(alpha = 0.01) +
   geom_smooth(method = lm) +
   geom_smooth(color = 'yellow') +
   ggtitle('Customer-Sales Scatter Points')
   
+# 计算相关系数
 cor.test(sp$Customers, sp$Sales)
 ```
 
@@ -359,8 +415,10 @@ cor.test(sp$Customers, sp$Sales)
 
 ### 2. 采样销量的整体时间走势
 ```{r echo=FALSE, warning=FALSE, Sample_Sales_Time}
+# 采样6个商店
 sample_stores <- sample(sp$Store, 6)
 
+# 采样销量的整体时间走势
 ggplot(subset(sp, Store %in% sample_stores), aes(x = Date, y = Sales)) + 
   geom_point(alpha = 0.1) +
   ggtitle('Sample Sales Time Trends') + 
@@ -373,9 +431,14 @@ ggplot(subset(sp, Store %in% sample_stores), aes(x = Date, y = Sales)) +
 
 ### 3. 采样销量月走势
 ```{r echo=FALSE, results='hide', warning=FALSE, Sample_Sales_Month}
-median_sales_by_month_store <- ddply(sp, c('Month', 'Store'), summarise, sales.median = median(Sales))
+# median sales group by month and store
+median_sales_by_month_store <- ddply(sp, c('Month', 'Store'), 
+                                     summarise, sales.median = median(Sales))
 
-ggplot(subset(median_sales_by_month_store, Store %in% sample_stores), aes(x = as.integer(Month), y = sales.median, color = factor(Store), shape = factor(Store))) +
+# 采样销量月走势
+ggplot(subset(median_sales_by_month_store, Store %in% sample_stores), 
+       aes(x = as.integer(Month), y = sales.median, 
+           color = factor(Store), shape = factor(Store))) +
   geom_point(size=3) +
   geom_line(size=1) +
   ggtitle('Sample Store Monthly Sales Trends') +
@@ -391,9 +454,14 @@ ggplot(subset(median_sales_by_month_store, Store %in% sample_stores), aes(x = as
 
 ### 4. 采量销量周走势
 ```{r echo=FALSE, results='hide', warning=FALSE, Sample_Sales_DOW}
-median_sales_by_dow_store <- ddply(sp, c('DayOfWeek', 'Store'), summarise, sales.median = median(Sales))
+# median sales group by DayOfWeek and Store
+median_sales_by_dow_store <- ddply(sp, c('DayOfWeek', 'Store'), 
+                                   summarise, sales.median = median(Sales))
 
-ggplot(subset(median_sales_by_dow_store, Store %in% sample_stores), aes(x = as.integer(DayOfWeek), y = sales.median, color = factor(Store), shape = factor(Store))) +
+# 采量销量周走势
+ggplot(subset(median_sales_by_dow_store, Store %in% sample_stores), 
+       aes(x = as.integer(DayOfWeek), y = sales.median, 
+           color = factor(Store), shape = factor(Store))) +
   geom_point(size=3) +
   geom_line(size=1) +
   scale_x_continuous(limits = c(1, 7), breaks = seq(1, 7, 1)) + 
@@ -408,7 +476,9 @@ ggplot(subset(median_sales_by_dow_store, Store %in% sample_stores), aes(x = as.i
 
 ### 5. 竞争对手开业一年内对销量的影响
 ```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE, Competition_Open_Around_Year}
-ggplot(subset(sp, CompetitionOpenDays>0 & CompetitionOpenDays<=365), aes(x = CompetitionOpenDays, y=Sales)) +
+# 竞争对手开业一年内对销量的影响
+ggplot(subset(sp, CompetitionOpenDays>0 & CompetitionOpenDays<=365), 
+       aes(x = CompetitionOpenDays, y=Sales)) +
     geom_smooth() + 
     ggtitle("Competition Opening around a Year")
 ```
@@ -417,8 +487,12 @@ ggplot(subset(sp, CompetitionOpenDays>0 & CompetitionOpenDays<=365), aes(x = Com
 
 ### 6. 竞争对手距离与销量条件均值分析
 ```{r echo=FALSE, warning=FALSE, message=FALSE, Median_Sales_Competition_Distance_Scatter}
-median_sales_cd_by_store <- ddply(sp, 'Store', summarise, sales.median = median(Sales), cd = median(CompetitionDistance))
+# median sales and compeition distance group by Store
+median_sales_cd_by_store <- ddply(sp, 'Store', summarise, 
+                                  sales.median = median(Sales), 
+                                  cd = median(CompetitionDistance))
 
+# 竞争对手距离与销量条件均值分析
 ggplot(median_sales_cd_by_store, aes(x = cd, y = sales.median)) + 
   geom_point() +
   scale_x_log10() + 
@@ -446,9 +520,14 @@ ggplot(median_sales_cd_by_store, aes(x = cd, y = sales.median)) +
 
 ### 1. Assortment-促销-月销量走势图
 ```{r echo=FALSE, results='hide', warning=FALSE, Month_Assortment_Promo_Sales_Line}
-median_sales_by_month_assortment_promo <- ddply(sp, c('Month', 'Assortment', 'Promo'), summarise, sales.median = median(Sales))
+# median sales group by month, assortment and promo
+median_sales_by_month_assortment_promo <- 
+  ddply(sp, c('Month', 'Assortment', 'Promo'), 
+        summarise, sales.median = median(Sales))
 
-ggplot(median_sales_by_month_assortment_promo, aes(x = as.integer(Month), y = sales.median, color = Assortment)) +
+# Assortment-促销-月销量走势图
+ggplot(median_sales_by_month_assortment_promo, 
+       aes(x = as.integer(Month), y = sales.median, color = Assortment)) +
   geom_point() +
   geom_line() +
   scale_x_continuous(limits = c(1, 12), breaks = seq(0, 12, 2)) + 
@@ -463,9 +542,14 @@ ggplot(median_sales_by_month_assortment_promo, aes(x = as.integer(Month), y = sa
 
 ### 2. StoreType-DOW-月销量走势图
 ```{r echo=FALSE, results='hide', warning=FALSE, Month_DayOfWeek_StoreType_Sales_Line}
-median_sales_by_month_dow_store_type <- ddply(sp, c('Month', 'DayOfWeek', 'StoreType'), summarise, sales.median = median(Sales))
+# median sales group by month, DayOfWeek and StoreType
+median_sales_by_month_dow_store_type <- 
+  ddply(sp, c('Month', 'DayOfWeek', 'StoreType'), 
+        summarise, sales.median = median(Sales))
 
-ggplot(median_sales_by_month_dow_store_type, aes(x = as.integer(Month), y = sales.median, color = StoreType)) +
+# StoreType-DOW-月销量走势图
+ggplot(median_sales_by_month_dow_store_type, 
+       aes(x = as.integer(Month), y = sales.median, color = StoreType)) +
   geom_point() +
   geom_line() +
   scale_x_continuous(limits = c(1, 12), breaks = seq(0, 12, 2)) + 
@@ -486,6 +570,7 @@ ggplot(median_sales_by_month_dow_store_type, aes(x = as.integer(Month), y = sale
 
 ### 3. StoreType和Assortment销量时间序列分析
 ```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE, StoreType_Assortment_Time_Trends}
+# StoreType销量时间序列分析
 ggplot(sp, aes(x = Date, y = Sales, color = StoreType)) + 
   geom_smooth(size = 2) + 
   theme(legend.position = 'bottom') + 
@@ -494,6 +579,8 @@ ggplot(sp, aes(x = Date, y = Sales, color = StoreType)) +
 # p2 <- ggplot(sp, aes(x = Date, y = Customers, color = StoreType)) + 
 #   geom_smooth(size = 2) + 
 #   theme(legend.position = 'bottom')
+
+# Assortment销量时间序列分析
 ggplot(sp, aes(x = Date, y = Sales, color = Assortment)) + 
   geom_smooth(size = 2) + 
   theme(legend.position = 'bottom') + 
@@ -519,7 +606,10 @@ ggplot(sp, aes(x = Date, y = Sales, color = Assortment)) +
 
 ### 4. 周日销量对比分析
 ```{r echo=FALSE, results='hide', warning=FALSE, Sunday_Sales_Comparison}
-ggplot(subset(sp, Store == 262), aes(x = Date, y = Sales, color = factor(DayOfWeek == 7), shape = factor(DayOfWeek == 7))) + 
+# 周日销量对比分析
+ggplot(subset(sp, Store == 262), 
+       aes(x = Date, y = Sales, color = factor(DayOfWeek == 7), 
+           shape = factor(DayOfWeek == 7))) + 
   geom_point(size = 2.8, alpha = 0.9) + 
   ggtitle("Sales of store 262 (True if sunday)") + 
   labs(color='Sunday', shape='Sunday')
@@ -529,17 +619,23 @@ ggplot(subset(sp, Store == 262), aes(x = Date, y = Sales, color = factor(DayOfWe
 
 ### 5. 关键特征Heatmap
 ```{r echo=FALSE, results='hide', warning=FALSE, Core_Features_Heatmap}
+# 拷贝一份来做热力图分析，因为涉及到特征类型转换
 heat_sp <- data.frame(sp)
-cols.exclude <- c('Date', 'StateHoliday', 'SchoolHoliday', 'IsInPromo2Month')
 
-heat_sp$StoreType <- revalue(x = heat_sp$StoreType, c('a' = 1, 'b' = 2, 'c' = 3, 'd' = 4))
-heat_sp$Assortment <- revalue(x = heat_sp$Assortment, c('a' = 1, 'b' = 2, 'c' = 3))
+# StoreType, Assortment转换为int
+heat_sp$StoreType <- revalue(x = heat_sp$StoreType, 
+                             c('a' = 1, 'b' = 2, 'c' = 3, 'd' = 4))
+heat_sp$Assortment <- revalue(x = heat_sp$Assortment, 
+                              c('a' = 1, 'b' = 2, 'c' = 3))
 
 heat_sp$StoreType <- as.integer(heat_sp$StoreType)
 heat_sp$Assortment <- as.integer(heat_sp$Assortment)
 
+# 移除掉以下特征
+cols.exclude <- c('Date', 'StateHoliday', 'SchoolHoliday', 'IsInPromo2Month')
 heat_sp <- heat_sp[, ! names(heat_sp) %in% cols.exclude, drop = F]
 
+# 相关性生成
 cormat <- round(cor(heat_sp), 2)
 melted_cormat <- melt(cormat)
 
@@ -552,15 +648,23 @@ get_upper_tri <- function(cormat){
 upper_tri <- get_upper_tri(cormat)
 
 melted_cormat <- melt(upper_tri, na.rm = TRUE)
-# Heatmap
+
+# 关键特征Heatmap
 ggplot(data = melted_cormat, aes(Var2, Var1, fill = value)) +
  geom_tile(color = "white") +
- scale_fill_gradient2(low = "blue", high = "red", mid = "white", midpoint = 0, limit = c(-1,1), space = "Lab", name="Sales Prediction\nCorrelation") +
+ scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
+                      midpoint = 0, limit = c(-1,1), space = "Lab", 
+                      name="Sales Prediction\nCorrelation") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, size = 12, hjust = 1)) +
   coord_fixed() +
-  theme(axis.title.x = element_blank(), axis.title.y = element_blank(), panel.grid.major = element_blank(), panel.border = element_blank(), panel.background = element_blank(), axis.ticks = element_blank(), legend.justification = c(1, 0), legend.position = c(0.6, 0.7), legend.direction = "horizontal") +
-  guides(fill = guide_colorbar(barwidth = 7, barheight = 1, title.position = "top", title.hjust = 0.5)) + 
+  theme(axis.title.x = element_blank(), axis.title.y = element_blank(), 
+        panel.grid.major = element_blank(), panel.border = element_blank(), 
+        panel.background = element_blank(), axis.ticks = element_blank(), 
+        legend.justification = c(1, 0), legend.position = c(0.6, 0.7), 
+        legend.direction = "horizontal") +
+  guides(fill = guide_colorbar(barwidth = 7, barheight = 1, 
+                               title.position = "top", title.hjust = 0.5)) + 
   ggtitle('Core Features Heatmap')
 ```
 
@@ -590,7 +694,31 @@ ggplot(data = melted_cormat, aes(Var2, Var1, fill = value)) +
 # VII. 定稿图与总结
 
 ### 1. 绘图一
+```{r echo=FALSE, results='hide', warning=FALSE, Sales_SampleStore_BoxPlot2}
+# 采样商店箱线图
+p1 <- ggplot(subset(sp, Store %in% sample_stores), 
+             aes(x = factor(Store), y = Sales)) + 
+  geom_boxplot() +
+  ggtitle('Sales by Sample Store Box Plot') + 
+  xlab('Store')
+
+# 采样商店小提琴图
+p2 <- ggplot(subset(sp, Store %in% sample_stores), 
+             aes(x = factor(Store), y = Sales)) + 
+  geom_violin() +
+  ggtitle('Sales by Sample Store Violin') + 
+  xlab('Store')
+
+# 合并两张图
+grid.arrange(p1, p2, ncol = 1)
+```
+
+### 2. 描述一
+从采样箱线图和小提琴图可以看出，每个商店都有一定的上界离群值，应证了上个问题中的猜测中“较高的峰值销量”可能性更大，后续多变量分析中可以关注下是否是Promo或时间带来的峰值。
+
+### 3. 绘图二
 ```{r echo=FALSE, warning=FALSE, message=FALSE, Median_Sales_Competition_Distance_Scatter2}
+# 竞争对手距离与销量条件均值分析
 ggplot(median_sales_cd_by_store, aes(x = cd, y = sales.median)) + 
   geom_point() +
   scale_x_log10() + 
@@ -601,16 +729,18 @@ ggplot(median_sales_cd_by_store, aes(x = cd, y = sales.median)) +
   ylab('log(Median Sales by Store)')
 ```
 
-### 2. 描述一
+### 4. 描述二
 竞争-销量分析：  
 
 * 竞争对手距离对于平均销量有较小的影响，当距离较小时平均销量最大，可以推测这是因为距离较小意味着一般是繁华的市区，导致附近的商店定价和销量比较高，或者可以理解成竞争压力导致的正面效应。  
 * 然后距离到10000的时间，平均销量也是比较高的，说明这是竞争最佳距离，太近了会导致竞争激烈，太远导致竞争压力过小。  
 * 从分布上讲，大部分的竞争对手距离分布在1000-10000之间。
 
-### 3. 绘图二
+### 5. 绘图三
 ```{r echo=FALSE, results='hide', warning=FALSE, Month_DayOfWeek_StoreType_Sales_Line2}
-ggplot(median_sales_by_month_dow_store_type, aes(x = as.integer(Month), y = sales.median, color = StoreType)) +
+# StoreType-DOW-月销量走势图
+ggplot(median_sales_by_month_dow_store_type, 
+       aes(x = as.integer(Month), y = sales.median, color = StoreType)) +
   geom_point() +
   geom_line() +
   scale_x_continuous(limits = c(1, 12), breaks = seq(0, 12, 2)) + 
@@ -621,39 +751,13 @@ ggplot(median_sales_by_month_dow_store_type, aes(x = as.integer(Month), y = sale
   theme(legend.position="bottom", legend.box = "horizontal")
 ```
 
-### 4. 描述二
+### 6. 描述三
 商店类型-时间序列分析：  
 
 * C类商店周日都是不营业的，D类商店从10月到12月周日是不营业的；  
 * 即使周末开业的商店销量也不如平时（B类除外）；  
 * B类商店的销量要远高于另外三类；  
 * 不同的StoreType和DayOfWeek的月走势是相似的，12月销量最高，推测是圣诞新年促销导致的，89月销量是全年低谷。  
-
-
-### 5. 绘图三
-```{r echo=FALSE, results='hide', warning=FALSE, Core_Features_Heatmap2}
-# Heatmap
-ggplot(data = melted_cormat, aes(Var2, Var1, fill = value)) +
- geom_tile(color = "white") +
- scale_fill_gradient2(low = "blue", high = "red", mid = "white", midpoint = 0, limit = c(-1,1), space = "Lab", name="Sales Prediction\nCorrelation") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, size = 12, hjust = 1)) +
-  coord_fixed() +
-  theme(axis.title.x = element_blank(), axis.title.y = element_blank(), panel.grid.major = element_blank(), panel.border = element_blank(), panel.background = element_blank(), axis.ticks = element_blank(), legend.justification = c(1, 0), legend.position = c(0.6, 0.7), legend.direction = "horizontal") +
-  guides(fill = guide_colorbar(barwidth = 7, barheight = 1, title.position = "top", title.hjust = 0.5)) + 
-  ggtitle('Core Features Heatmap')
-```
-
-### 6. 描述三
-特征相关性热力图分析:    
-
-* 销量与顾客数有很强的正相关性，和促销也有较强的正相关；  
-* 另外跟节假日，竞争对手信息有一定的相关性；  
-* 跟Promo2长期促销的相关性较弱；  
-* Promo跟DayOfWeek有较强的负相关，也就意味着周末的促销效果并不好；  
-* 相关性最强的都是特征衍化产生的，隶属于同一个特征群体，如销量相关，促销相关，时间相关；  
-* 可以看出Sales跟所有用于训练的特征相关性都较强，说明特征工程的优化效果还是不错的。    
-其实热力图分析存在一定的弊病，因为某些特征是因子变量，如果按照int来做相关性分析是最不合理的。如图中Store和Sales的相关性很弱，实际上从xgboost的特征重要性分析可以看出Store对销量的影响力是很大的。
 
 ------
 
