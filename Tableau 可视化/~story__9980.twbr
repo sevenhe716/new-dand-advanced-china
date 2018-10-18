@@ -1,0 +1,1229 @@
+<?xml version='1.0' encoding='utf-8' ?>
+
+<!-- build 20182.18.0925.2120                               -->
+<workbook source-build='2018.2.2 (20182.18.0925.2120)' source-platform='win' version='18.1' xmlns:user='http://www.tableausoftware.com/xml/user'>
+  <document-format-change-manifest>
+    <SavingAnalyticObjects />
+    <SortTagCleanup />
+  </document-format-change-manifest>
+  <preferences>
+    <preference name='ui.encoding.shelf.height' value='24' />
+    <preference name='ui.shelf.height' value='26' />
+  </preferences>
+  <datasources>
+    <datasource caption='rossmann_sales_prediction' inline='true' name='federated.0ink3yy1gvhjki184wc1w0x8st87' version='18.1'>
+      <connection class='federated'>
+        <named-connections>
+          <named-connection caption='rossmann_sales_prediction' name='textscan.05wihng09gdb5l18w5k0h14c9ss3'>
+            <connection class='textclean' cleaning='yes' compat='no' csvFile='C:/dand/assessment/new-dand-advanced-china/Tableau 可视化/rossmann_sales_prediction.csv' dataRefreshTime='' directory='C:/dand/assessment/new-dand-advanced-china/Tableau 可视化' filename='C:/Users/SevenHe/AppData/Local/Temp/TableauTemp/1ycctrp0dvkcig1g9gq9f00rci3d/rossmann_sales_prediction.csv.xlsx' interpretationMode='8' password='' port='0' server='' validate='no' />
+          </named-connection>
+        </named-connections>
+        <relation connection='textscan.05wihng09gdb5l18w5k0h14c9ss3' name='rossmann_sales_prediction.csv' table='[rossmann_sales_prediction#csv$]' type='table'>
+          <columns character-set='UTF-8' gridOrigin='A1:T10001:no:A1:T10001:1' header='yes' locale='zh_CN' separator=','>
+            <column datatype='integer' name='Id' ordinal='0' />
+            <column datatype='integer' name='Store' ordinal='1' />
+            <column datatype='integer' name='DayOfWeek' ordinal='2' />
+            <column datatype='date' name='Date' ordinal='3' />
+            <column datatype='integer' name='Sales' ordinal='4' />
+            <column datatype='integer' name='Customers' ordinal='5' />
+            <column datatype='integer' name='Promo' ordinal='6' />
+            <column datatype='integer' name='StateHoliday' ordinal='7' />
+            <column datatype='integer' name='SchoolHoliday' ordinal='8' />
+            <column datatype='integer' name='Year' ordinal='9' />
+            <column datatype='integer' name='Month' ordinal='10' />
+            <column datatype='integer' name='Day' ordinal='11' />
+            <column datatype='integer' name='IsHoliday' ordinal='12' />
+            <column datatype='string' name='StoreType' ordinal='13' />
+            <column datatype='string' name='Assortment' ordinal='14' />
+            <column datatype='integer' name='CompetitionDistance' ordinal='15' />
+            <column datatype='integer' name='Promo2' ordinal='16' />
+            <column datatype='integer' name='IsInPromo2Month' ordinal='17' />
+            <column datatype='integer' name='CompetitionOpenDays' ordinal='18' />
+            <column datatype='integer' name='Promo2OpenDays' ordinal='19' />
+          </columns>
+        </relation>
+        <metadata-records>
+          <metadata-record class='column'>
+            <remote-name>Id</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Id]</local-name>
+            <parent-name>[rossmann_sales_prediction.csv]</parent-name>
+            <remote-alias>Id</remote-alias>
+            <ordinal>0</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Store</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Store]</local-name>
+            <parent-name>[rossmann_sales_prediction.csv]</parent-name>
+            <remote-alias>Store</remote-alias>
+            <ordinal>1</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>DayOfWeek</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[DayOfWeek]</local-name>
+            <parent-name>[rossmann_sales_prediction.csv]</parent-name>
+            <remote-alias>DayOfWeek</remote-alias>
+            <ordinal>2</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Date</remote-name>
+            <remote-type>7</remote-type>
+            <local-name>[Date]</local-name>
+            <parent-name>[rossmann_sales_prediction.csv]</parent-name>
+            <remote-alias>Date</remote-alias>
+            <ordinal>3</ordinal>
+            <local-type>date</local-type>
+            <aggregation>Year</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;DATE&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Sales</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Sales]</local-name>
+            <parent-name>[rossmann_sales_prediction.csv]</parent-name>
+            <remote-alias>Sales</remote-alias>
+            <ordinal>4</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Customers</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Customers]</local-name>
+            <parent-name>[rossmann_sales_prediction.csv]</parent-name>
+            <remote-alias>Customers</remote-alias>
+            <ordinal>5</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Promo</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Promo]</local-name>
+            <parent-name>[rossmann_sales_prediction.csv]</parent-name>
+            <remote-alias>Promo</remote-alias>
+            <ordinal>6</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>StateHoliday</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[StateHoliday]</local-name>
+            <parent-name>[rossmann_sales_prediction.csv]</parent-name>
+            <remote-alias>StateHoliday</remote-alias>
+            <ordinal>7</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>SchoolHoliday</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[SchoolHoliday]</local-name>
+            <parent-name>[rossmann_sales_prediction.csv]</parent-name>
+            <remote-alias>SchoolHoliday</remote-alias>
+            <ordinal>8</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Year</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Year]</local-name>
+            <parent-name>[rossmann_sales_prediction.csv]</parent-name>
+            <remote-alias>Year</remote-alias>
+            <ordinal>9</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Month</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Month]</local-name>
+            <parent-name>[rossmann_sales_prediction.csv]</parent-name>
+            <remote-alias>Month</remote-alias>
+            <ordinal>10</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Day</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Day]</local-name>
+            <parent-name>[rossmann_sales_prediction.csv]</parent-name>
+            <remote-alias>Day</remote-alias>
+            <ordinal>11</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>IsHoliday</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[IsHoliday]</local-name>
+            <parent-name>[rossmann_sales_prediction.csv]</parent-name>
+            <remote-alias>IsHoliday</remote-alias>
+            <ordinal>12</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>StoreType</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[StoreType]</local-name>
+            <parent-name>[rossmann_sales_prediction.csv]</parent-name>
+            <remote-alias>StoreType</remote-alias>
+            <ordinal>13</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LZH_RCN_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Assortment</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[Assortment]</local-name>
+            <parent-name>[rossmann_sales_prediction.csv]</parent-name>
+            <remote-alias>Assortment</remote-alias>
+            <ordinal>14</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LZH_RCN_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>CompetitionDistance</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[CompetitionDistance]</local-name>
+            <parent-name>[rossmann_sales_prediction.csv]</parent-name>
+            <remote-alias>CompetitionDistance</remote-alias>
+            <ordinal>15</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Promo2</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Promo2]</local-name>
+            <parent-name>[rossmann_sales_prediction.csv]</parent-name>
+            <remote-alias>Promo2</remote-alias>
+            <ordinal>16</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>IsInPromo2Month</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[IsInPromo2Month]</local-name>
+            <parent-name>[rossmann_sales_prediction.csv]</parent-name>
+            <remote-alias>IsInPromo2Month</remote-alias>
+            <ordinal>17</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>CompetitionOpenDays</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[CompetitionOpenDays]</local-name>
+            <parent-name>[rossmann_sales_prediction.csv]</parent-name>
+            <remote-alias>CompetitionOpenDays</remote-alias>
+            <ordinal>18</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Promo2OpenDays</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Promo2OpenDays]</local-name>
+            <parent-name>[rossmann_sales_prediction.csv]</parent-name>
+            <remote-alias>Promo2OpenDays</remote-alias>
+            <ordinal>19</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='capability'>
+            <remote-name />
+            <remote-type>0</remote-type>
+            <parent-name>[rossmann_sales_prediction.csv]</parent-name>
+            <remote-alias />
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='context'>0</attribute>
+              <attribute datatype='string' name='gridOrigin'>&quot;A1:T10001:no:A1:T10001:1&quot;</attribute>
+              <attribute datatype='integer' name='lost'>0</attribute>
+              <attribute datatype='integer' name='outcome'>1</attribute>
+              <attribute datatype='integer' name='processed'>179980</attribute>
+            </attributes>
+          </metadata-record>
+        </metadata-records>
+      </connection>
+      <aliases enabled='yes' />
+      <column caption='Sales per Customer' datatype='real' name='[Calculation_724516643168866304]' role='measure' type='quantitative'>
+        <calculation class='tableau' formula='[Sales] / [Customers]' />
+      </column>
+      <column caption='Sales by Store' datatype='real' name='[Calculation_724516643172974596]' role='dimension' type='ordinal'>
+        <calculation class='tableau' formula='{ FIXED [Store] : MEDIAN([Sales]) }' />
+      </column>
+      <column datatype='date' name='[Date]' role='dimension' type='quantitative' />
+      <column aggregation='Sum' datatype='integer' name='[DayOfWeek]' role='dimension' type='ordinal' />
+      <column aggregation='Sum' datatype='integer' name='[Id]' role='dimension' type='ordinal' />
+      <column aggregation='Sum' datatype='integer' name='[Month]' role='dimension' type='ordinal' />
+      <column datatype='integer' name='[Number of Records]' role='measure' type='quantitative' user:auto-column='numrec'>
+        <calculation class='tableau' formula='1' />
+      </column>
+      <column aggregation='None' datatype='integer' name='[Sales (数据桶)]' role='dimension' type='quantitative'>
+        <calculation class='bin' decimals='2' formula='[Sales]' peg='0' size='536' />
+      </column>
+      <column aggregation='None' caption='Sales by Store (bin)' datatype='integer' name='[Sales by Store (数据桶)]' role='dimension' type='quantitative'>
+        <calculation class='bin' decimals='2' formula='[Calculation_724516643172974596]' peg='0' size='360' />
+      </column>
+      <column aggregation='None' datatype='integer' name='[Sales per Customer (数据桶)]' role='dimension' type='quantitative'>
+        <calculation class='bin' decimals='-1' formula='[Calculation_724516643168866304]' peg='0' size='0.23' />
+      </column>
+      <column datatype='integer' name='[Sales]' role='measure' type='quantitative' />
+      <column aggregation='Sum' datatype='integer' name='[Store]' role='dimension' type='ordinal' />
+      <column-instance column='[Sales]' derivation='Median' name='[med:Sales:qk]' pivot='key' type='quantitative' />
+      <column-instance column='[Forecast Indicator]' derivation='None' forecast-column-base='[Forecast Indicator]' forecast-column-type='forecast-indicator' name='[none:Forecast Indicator:nk]' pivot='key' type='nominal' />
+      <layout dim-ordering='alphabetic' dim-percentage='0.354351' measure-ordering='alphabetic' measure-percentage='0.645649' show-structure='true' />
+      <semantic-values>
+        <semantic-value key='[Country].[Name]' value='&quot;China&quot;' />
+      </semantic-values>
+      <default-sorts>
+        <manual-sort column='[none:Forecast Indicator:nk]' direction='ASC'>
+          <dictionary>
+            <bucket>&quot;实际&quot;</bucket>
+            <bucket>&quot;估计&quot;</bucket>
+          </dictionary>
+        </manual-sort>
+      </default-sorts>
+      <analytic-model>
+        <name>
+          <field name='[AnalyticModel:{84219762-c51c-43aa-a2b8-ad0323d239fd}]' />
+        </name>
+        <analytic-model-specifications class='cluster-specifications'>
+          <analysis-fields>
+            <field name='[federated.0ink3yy1gvhjki184wc1w0x8st87].[med:Sales:qk]' />
+          </analysis-fields>
+          <filter-fields />
+          <lod-fields />
+          <number-of-desired-clusters>0</number-of-desired-clusters>
+          <is-dissagregate>false</is-dissagregate>
+        </analytic-model-specifications>
+        <result-fields />
+      </analytic-model>
+      <analytic-model>
+        <name>
+          <field name='[AnalyticModel:{f90eeb55-39e9-486c-886b-3e0ccc391f68}]' />
+        </name>
+        <analytic-model-specifications class='cluster-specifications'>
+          <analysis-fields>
+            <field name='[federated.0ink3yy1gvhjki184wc1w0x8st87].[med:Sales:qk]' />
+          </analysis-fields>
+          <filter-fields />
+          <lod-fields />
+          <number-of-desired-clusters>0</number-of-desired-clusters>
+          <is-dissagregate>false</is-dissagregate>
+        </analytic-model-specifications>
+        <result-fields />
+      </analytic-model>
+    </datasource>
+  </datasources>
+  <worksheets>
+    <worksheet name='Sales Hist'>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='rossmann_sales_prediction' name='federated.0ink3yy1gvhjki184wc1w0x8st87' />
+          </datasources>
+          <datasource-dependencies datasource='federated.0ink3yy1gvhjki184wc1w0x8st87'>
+            <column aggregation='None' datatype='integer' name='[Sales (数据桶)]' role='dimension' type='quantitative'>
+              <calculation class='bin' decimals='2' formula='[Sales]' peg='0' size='536' />
+            </column>
+            <column datatype='integer' name='[Sales]' role='measure' type='quantitative' />
+            <column-instance column='[Sales]' derivation='Count' name='[cnt:Sales:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[Sales (数据桶)]' derivation='None' name='[none:Sales (数据桶):qk]' pivot='key' type='quantitative' />
+          </datasource-dependencies>
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='axis'>
+            <format attr='title' class='0' field='[federated.0ink3yy1gvhjki184wc1w0x8st87].[none:Sales (数据桶):qk]' scope='cols' value='Sales' />
+            <encoding attr='space' class='0' field='[federated.0ink3yy1gvhjki184wc1w0x8st87].[none:Sales (数据桶):qk]' field-type='quantitative' max='24000.0' min='0.0' range-type='fixed' scope='cols' type='space' />
+            <encoding attr='space' class='0' field='[federated.0ink3yy1gvhjki184wc1w0x8st87].[cnt:Sales:qk]' field-type='quantitative' max='63101' min='0' range-type='fixed' scope='rows' type='space' />
+            <format attr='title' class='0' field='[federated.0ink3yy1gvhjki184wc1w0x8st87].[cnt:Sales:qk]' scope='rows' value='Frequency' />
+          </style-rule>
+          <style-rule element='label'>
+            <format attr='text-format' field='[federated.0ink3yy1gvhjki184wc1w0x8st87].[none:Sales (数据桶):qk]' value='*' />
+          </style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Automatic' />
+            <mark-sizing custom-mark-size-in-axis-units='1.0' mark-alignment='mark-alignment-left' mark-sizing-setting='marks-scaling-on' use-custom-mark-size='false' />
+          </pane>
+        </panes>
+        <rows>[federated.0ink3yy1gvhjki184wc1w0x8st87].[cnt:Sales:qk]</rows>
+        <cols>[federated.0ink3yy1gvhjki184wc1w0x8st87].[none:Sales (数据桶):qk]</cols>
+        <show-full-range>
+          <column>[federated.0ink3yy1gvhjki184wc1w0x8st87].[none:Sales (数据桶):qk]</column>
+        </show-full-range>
+      </table>
+    </worksheet>
+    <worksheet name='Sales Hist (2)'>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='rossmann_sales_prediction' name='federated.0ink3yy1gvhjki184wc1w0x8st87' />
+          </datasources>
+          <datasource-dependencies datasource='federated.0ink3yy1gvhjki184wc1w0x8st87'>
+            <column aggregation='None' datatype='integer' name='[Sales (数据桶)]' role='dimension' type='quantitative'>
+              <calculation class='bin' decimals='2' formula='[Sales]' peg='0' size='536' />
+            </column>
+            <column datatype='integer' name='[Sales]' role='measure' type='quantitative' />
+            <column datatype='string' name='[StoreType]' role='dimension' type='nominal' />
+            <column-instance column='[Sales]' derivation='Count' name='[cnt:Sales:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[Sales (数据桶)]' derivation='None' name='[none:Sales (数据桶):qk]' pivot='key' type='quantitative' />
+            <column-instance column='[StoreType]' derivation='None' name='[none:StoreType:nk]' pivot='key' type='nominal' />
+          </datasource-dependencies>
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='axis'>
+            <encoding attr='space' class='0' field='[federated.0ink3yy1gvhjki184wc1w0x8st87].[cnt:Sales:qk]' field-type='quantitative' range-type='independent' scope='rows' type='space' />
+            <encoding attr='space' class='0' field='[federated.0ink3yy1gvhjki184wc1w0x8st87].[none:Sales (数据桶):qk]' field-type='quantitative' range-type='independent' scope='cols' type='space' />
+          </style-rule>
+          <style-rule element='label'>
+            <format attr='text-format' field='[federated.0ink3yy1gvhjki184wc1w0x8st87].[none:Sales (数据桶):qk]' value='*' />
+          </style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Bar' />
+            <mark-sizing custom-mark-size-in-axis-units='1.0' mark-alignment='mark-alignment-left' mark-sizing-setting='marks-scaling-on' use-custom-mark-size='false' />
+            <style>
+              <style-rule element='mark'>
+                <format attr='mark-labels-cull' value='true' />
+                <format attr='mark-labels-line-first' value='true' />
+                <format attr='mark-labels-line-last' value='true' />
+                <format attr='mark-labels-range-min' value='true' />
+                <format attr='mark-labels-range-max' value='true' />
+                <format attr='mark-labels-mode' value='all' />
+                <format attr='mark-labels-range-scope' value='pane' />
+                <format attr='mark-labels-range-field' value='' />
+                <format attr='mark-labels-show' value='false' />
+              </style-rule>
+            </style>
+          </pane>
+        </panes>
+        <rows>[federated.0ink3yy1gvhjki184wc1w0x8st87].[cnt:Sales:qk]</rows>
+        <cols>([federated.0ink3yy1gvhjki184wc1w0x8st87].[none:StoreType:nk] * [federated.0ink3yy1gvhjki184wc1w0x8st87].[none:Sales (数据桶):qk])</cols>
+      </table>
+    </worksheet>
+    <worksheet name='Sales Per Cumster Hist'>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='rossmann_sales_prediction' name='federated.0ink3yy1gvhjki184wc1w0x8st87' />
+          </datasources>
+          <datasource-dependencies datasource='federated.0ink3yy1gvhjki184wc1w0x8st87'>
+            <column caption='Sales per Customer' datatype='real' name='[Calculation_724516643168866304]' role='measure' type='quantitative'>
+              <calculation class='tableau' formula='[Sales] / [Customers]' />
+            </column>
+            <column datatype='integer' name='[Customers]' role='measure' type='quantitative' />
+            <column aggregation='None' datatype='integer' name='[Sales per Customer (数据桶)]' role='dimension' type='quantitative'>
+              <calculation class='bin' decimals='-1' formula='[Calculation_724516643168866304]' peg='0' size='0.23' />
+            </column>
+            <column datatype='integer' name='[Sales]' role='measure' type='quantitative' />
+            <column-instance column='[Calculation_724516643168866304]' derivation='Count' name='[cnt:Calculation_724516643168866304:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[Sales per Customer (数据桶)]' derivation='None' name='[none:Sales per Customer (数据桶):qk]' pivot='key' type='quantitative' />
+          </datasource-dependencies>
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='axis'>
+            <encoding attr='space' class='0' field='[federated.0ink3yy1gvhjki184wc1w0x8st87].[none:Sales per Customer (数据桶):qk]' field-type='quantitative' max='20.0' min='0.0' range-type='fixed' scope='cols' type='space' />
+            <format attr='title' class='0' field='[federated.0ink3yy1gvhjki184wc1w0x8st87].[none:Sales per Customer (数据桶):qk]' scope='cols' value='Sales per Customer' />
+            <format attr='title' class='0' field='[federated.0ink3yy1gvhjki184wc1w0x8st87].[cnt:Calculation_724516643168866304:qk]' scope='rows' value='Frequency' />
+          </style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Automatic' />
+            <mark-sizing custom-mark-size-in-axis-units='1.0' mark-alignment='mark-alignment-left' mark-sizing-setting='marks-scaling-on' use-custom-mark-size='false' />
+          </pane>
+        </panes>
+        <rows>[federated.0ink3yy1gvhjki184wc1w0x8st87].[cnt:Calculation_724516643168866304:qk]</rows>
+        <cols>[federated.0ink3yy1gvhjki184wc1w0x8st87].[none:Sales per Customer (数据桶):qk]</cols>
+        <show-full-range>
+          <column>[federated.0ink3yy1gvhjki184wc1w0x8st87].[Sales per Customer (数据桶)]</column>
+        </show-full-range>
+      </table>
+    </worksheet>
+    <worksheet name='Sales by Store Hist'>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='rossmann_sales_prediction' name='federated.0ink3yy1gvhjki184wc1w0x8st87' />
+          </datasources>
+          <datasource-dependencies datasource='federated.0ink3yy1gvhjki184wc1w0x8st87'>
+            <column caption='Sales by Store' datatype='real' name='[Calculation_724516643172974596]' role='dimension' type='ordinal'>
+              <calculation class='tableau' formula='{ FIXED [Store] : MEDIAN([Sales]) }' />
+            </column>
+            <column aggregation='None' caption='Sales by Store (bin)' datatype='integer' name='[Sales by Store (数据桶)]' role='dimension' type='quantitative'>
+              <calculation class='bin' decimals='2' formula='[Calculation_724516643172974596]' peg='0' size='360' />
+            </column>
+            <column datatype='integer' name='[Sales]' role='measure' type='quantitative' />
+            <column aggregation='Sum' datatype='integer' name='[Store]' role='dimension' type='ordinal' />
+            <column-instance column='[Sales by Store (数据桶)]' derivation='None' name='[none:Sales by Store (数据桶):qk]' pivot='key' type='quantitative' />
+            <column-instance column='[Calculation_724516643172974596]' derivation='Sum' name='[sum:Calculation_724516643172974596:qk]' pivot='key' type='quantitative' />
+          </datasource-dependencies>
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='axis'>
+            <format attr='title' class='0' field='[federated.0ink3yy1gvhjki184wc1w0x8st87].[sum:Calculation_724516643172974596:qk]' scope='rows' value='Frequency' />
+            <format attr='title' class='0' field='[federated.0ink3yy1gvhjki184wc1w0x8st87].[none:Sales by Store (数据桶):qk]' scope='cols' value='Sales by Store' />
+          </style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Automatic' />
+            <mark-sizing custom-mark-size-in-axis-units='1.0' mark-alignment='mark-alignment-left' mark-sizing-setting='marks-scaling-on' use-custom-mark-size='false' />
+          </pane>
+        </panes>
+        <rows>[federated.0ink3yy1gvhjki184wc1w0x8st87].[sum:Calculation_724516643172974596:qk]</rows>
+        <cols>[federated.0ink3yy1gvhjki184wc1w0x8st87].[none:Sales by Store (数据桶):qk]</cols>
+        <show-full-range>
+          <column>[federated.0ink3yy1gvhjki184wc1w0x8st87].[Sales by Store (数据桶) 2]</column>
+          <column>[federated.0ink3yy1gvhjki184wc1w0x8st87].[none:Sales by Store (数据桶):qk]</column>
+        </show-full-range>
+      </table>
+    </worksheet>
+    <worksheet name='Sales-Customers Scatter'>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='rossmann_sales_prediction' name='federated.0ink3yy1gvhjki184wc1w0x8st87' />
+          </datasources>
+          <datasource-dependencies datasource='federated.0ink3yy1gvhjki184wc1w0x8st87'>
+            <column datatype='integer' name='[Customers]' role='measure' type='quantitative' />
+            <column aggregation='Sum' datatype='integer' name='[Id]' role='dimension' type='ordinal' />
+            <column datatype='integer' name='[Sales]' role='measure' type='quantitative' />
+            <column-instance column='[Id]' derivation='None' name='[none:Id:ok]' pivot='key' type='ordinal' />
+            <column-instance column='[Customers]' derivation='Sum' name='[sum:Customers:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[Sales]' derivation='Sum' name='[sum:Sales:qk]' pivot='key' type='quantitative' />
+          </datasource-dependencies>
+          <aggregation value='true' />
+        </view>
+        <style />
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Automatic' />
+            <mark-sizing mark-sizing-setting='marks-scaling-off' />
+            <encodings>
+              <lod column='[federated.0ink3yy1gvhjki184wc1w0x8st87].[none:Id:ok]' />
+            </encodings>
+            <trendline enable-confidence-bands='false' enable-instant-analytics='true' enabled='true' exclude-color='false' exclude-intercept='false' fit='linear' />
+            <style>
+              <style-rule element='mark'>
+                <format attr='shape' value='circle' />
+                <format attr='size' value='0.0099999997764825821' />
+              </style-rule>
+              <style-rule element='trendline'>
+                <format attr='line-visibility' value='on' />
+                <format attr='line-pattern-only' value='dashed' />
+                <format attr='stroke-color' value='#ff000467' />
+              </style-rule>
+            </style>
+          </pane>
+        </panes>
+        <rows>[federated.0ink3yy1gvhjki184wc1w0x8st87].[sum:Sales:qk]</rows>
+        <cols>[federated.0ink3yy1gvhjki184wc1w0x8st87].[sum:Customers:qk]</cols>
+      </table>
+    </worksheet>
+    <worksheet name='Store-Type Buble'>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='rossmann_sales_prediction' name='federated.0ink3yy1gvhjki184wc1w0x8st87' />
+          </datasources>
+          <datasource-dependencies datasource='federated.0ink3yy1gvhjki184wc1w0x8st87'>
+            <column datatype='string' name='[StoreType]' role='dimension' type='nominal' />
+            <column-instance column='[StoreType]' derivation='Count' name='[cnt:StoreType:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[StoreType]' derivation='None' name='[none:StoreType:nk]' pivot='key' type='nominal' />
+          </datasource-dependencies>
+          <aggregation value='true' />
+        </view>
+        <style />
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Circle' />
+            <encodings>
+              <size column='[federated.0ink3yy1gvhjki184wc1w0x8st87].[cnt:StoreType:qk]' />
+              <text column='[federated.0ink3yy1gvhjki184wc1w0x8st87].[none:StoreType:nk]' />
+              <text column='[federated.0ink3yy1gvhjki184wc1w0x8st87].[cnt:StoreType:qk]' />
+              <color column='[federated.0ink3yy1gvhjki184wc1w0x8st87].[none:StoreType:nk]' />
+            </encodings>
+            <style>
+              <style-rule element='mark'>
+                <format attr='mark-labels-show' value='true' />
+                <format attr='mark-labels-cull' value='true' />
+                <format attr='mark-labels-line-first' value='true' />
+                <format attr='mark-labels-line-last' value='true' />
+                <format attr='mark-labels-range-min' value='true' />
+                <format attr='mark-labels-range-max' value='true' />
+                <format attr='mark-labels-mode' value='all' />
+                <format attr='mark-labels-range-scope' value='pane' />
+                <format attr='mark-labels-range-field' value='' />
+              </style-rule>
+            </style>
+          </pane>
+        </panes>
+        <rows />
+        <cols />
+      </table>
+    </worksheet>
+    <worksheet name='工作表 6'>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='rossmann_sales_prediction' name='federated.0ink3yy1gvhjki184wc1w0x8st87' />
+          </datasources>
+          <datasource-dependencies datasource='federated.0ink3yy1gvhjki184wc1w0x8st87'>
+            <column aggregation='Sum' datatype='integer' name='[DayOfWeek]' role='dimension' type='ordinal' />
+            <column aggregation='Sum' datatype='integer' name='[Month]' role='dimension' type='ordinal' />
+            <column datatype='integer' name='[Sales]' role='measure' type='quantitative' />
+            <column datatype='string' name='[StoreType]' role='dimension' type='nominal' />
+            <column-instance column='[Sales]' derivation='Median' name='[med:Sales:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[DayOfWeek]' derivation='None' name='[none:DayOfWeek:ok]' pivot='key' type='ordinal' />
+            <column-instance column='[Month]' derivation='None' name='[none:Month:ok]' pivot='key' type='ordinal' />
+            <column-instance column='[StoreType]' derivation='None' name='[none:StoreType:nk]' pivot='key' type='nominal' />
+          </datasource-dependencies>
+          <aggregation value='true' />
+        </view>
+        <style />
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Line' />
+            <mark-sizing mark-sizing-setting='marks-scaling-off' />
+            <encodings>
+              <color column='[federated.0ink3yy1gvhjki184wc1w0x8st87].[none:StoreType:nk]' />
+            </encodings>
+            <style>
+              <style-rule element='mark'>
+                <format attr='size' value='0.49375692009925842' />
+              </style-rule>
+            </style>
+          </pane>
+        </panes>
+        <rows>([federated.0ink3yy1gvhjki184wc1w0x8st87].[none:StoreType:nk] * [federated.0ink3yy1gvhjki184wc1w0x8st87].[med:Sales:qk])</rows>
+        <cols>([federated.0ink3yy1gvhjki184wc1w0x8st87].[none:DayOfWeek:ok] / [federated.0ink3yy1gvhjki184wc1w0x8st87].[none:Month:ok])</cols>
+      </table>
+    </worksheet>
+    <worksheet name='工作表 8'>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='rossmann_sales_prediction' name='federated.0ink3yy1gvhjki184wc1w0x8st87' />
+          </datasources>
+          <datasource-dependencies datasource='federated.0ink3yy1gvhjki184wc1w0x8st87'>
+            <column datatype='date' name='[Date]' role='dimension' type='quantitative' />
+            <column datatype='integer' name='[Sales]' role='measure' type='quantitative' />
+            <column datatype='string' name='[StoreType]' role='dimension' type='nominal' />
+            <column-instance column='[Sales]' derivation='Median' forecast-column-base='[med:Sales:qk]' forecast-column-type='forecast-value' name='[fVal:med:Sales:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[Sales]' derivation='Median' name='[med:Sales:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[Forecast Indicator]' derivation='None' forecast-column-base='[Forecast Indicator]' forecast-column-type='forecast-indicator' name='[none:Forecast Indicator:nk]' pivot='key' type='nominal' />
+            <column-instance column='[StoreType]' derivation='None' name='[none:StoreType:nk]' pivot='key' type='nominal' />
+            <column-instance column='[Date]' derivation='Month-Trunc' name='[tmn:Date:qk]' pivot='key' type='quantitative' />
+          </datasource-dependencies>
+          <aggregation value='true' />
+        </view>
+        <style />
+        <panes>
+          <pane id='2' selection-relaxation-option='selection-relaxation-allow'>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Line' />
+            <encodings>
+              <color column='[federated.0ink3yy1gvhjki184wc1w0x8st87].[none:StoreType:nk]' />
+              <color column='[federated.0ink3yy1gvhjki184wc1w0x8st87].[none:Forecast Indicator:nk]' />
+            </encodings>
+          </pane>
+        </panes>
+        <rows>[federated.0ink3yy1gvhjki184wc1w0x8st87].[fVal:med:Sales:qk]</rows>
+        <cols>[federated.0ink3yy1gvhjki184wc1w0x8st87].[tmn:Date:qk]</cols>
+        <forecast-specification auto-forecast-agg='true' band-confidence-level='95.000000' enabled='true' fill-type='fill-missing' ignore-last='1' model-type='auto-season' range-type='auto' show-prediction-bands='true' />
+      </table>
+    </worksheet>
+    <worksheet name='工作表 9'>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='rossmann_sales_prediction' name='federated.0ink3yy1gvhjki184wc1w0x8st87' />
+          </datasources>
+          <datasource-dependencies datasource='federated.0ink3yy1gvhjki184wc1w0x8st87'>
+            <column datatype='date' name='[Date]' role='dimension' type='quantitative' />
+            <column datatype='integer' name='[Sales]' role='measure' type='quantitative' />
+            <column aggregation='Sum' datatype='integer' name='[Store]' role='dimension' type='ordinal' />
+            <column-instance column='[Store]' derivation='None' name='[none:Store:ok]' pivot='key' type='ordinal' />
+            <column-instance column='[Sales]' derivation='Sum' name='[sum:Sales:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[Date]' derivation='Day-Trunc' name='[tdy:Date:qk]' pivot='key' type='quantitative' />
+          </datasource-dependencies>
+          <filter class='categorical' column='[federated.0ink3yy1gvhjki184wc1w0x8st87].[none:Store:ok]'>
+            <groupfilter function='member' level='[none:Store:ok]' member='262' user:ui-domain='relevant' user:ui-enumeration='inclusive' user:ui-marker='enumerate' />
+          </filter>
+          <slices>
+            <column>[federated.0ink3yy1gvhjki184wc1w0x8st87].[none:Store:ok]</column>
+          </slices>
+          <aggregation value='true' />
+        </view>
+        <style />
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Circle' />
+          </pane>
+        </panes>
+        <rows>[federated.0ink3yy1gvhjki184wc1w0x8st87].[sum:Sales:qk]</rows>
+        <cols>[federated.0ink3yy1gvhjki184wc1w0x8st87].[tdy:Date:qk]</cols>
+      </table>
+    </worksheet>
+  </worksheets>
+  <dashboards>
+    <dashboard name='Sales Hists'>
+      <style />
+      <size maxheight='800' maxwidth='1000' minheight='800' minwidth='1000' />
+      <zones>
+        <zone h='100000' id='2' type='layout-basic' w='100000' x='0' y='0'>
+          <zone h='49000' id='1' name='Sales Hist' w='98400' x='800' y='1000'>
+            <zone-style>
+              <format attr='border-color' value='#000000' />
+              <format attr='border-style' value='none' />
+              <format attr='border-width' value='0' />
+              <format attr='margin' value='4' />
+            </zone-style>
+          </zone>
+          <zone h='49000' id='3' name='Sales Per Cumster Hist' w='49200' x='50000' y='50000'>
+            <zone-style>
+              <format attr='border-color' value='#000000' />
+              <format attr='border-style' value='none' />
+              <format attr='border-width' value='0' />
+              <format attr='margin' value='4' />
+            </zone-style>
+          </zone>
+          <zone h='49000' id='5' name='Sales by Store Hist' w='49200' x='800' y='50000'>
+            <zone-style>
+              <format attr='border-color' value='#000000' />
+              <format attr='border-style' value='none' />
+              <format attr='border-width' value='0' />
+              <format attr='margin' value='4' />
+            </zone-style>
+          </zone>
+          <zone-style>
+            <format attr='border-color' value='#000000' />
+            <format attr='border-style' value='none' />
+            <format attr='border-width' value='0' />
+            <format attr='margin' value='8' />
+          </zone-style>
+        </zone>
+      </zones>
+    </dashboard>
+    <dashboard name='Sales-Customers'>
+      <style />
+      <size maxheight='800' maxwidth='1000' minheight='800' minwidth='1000' />
+      <zones>
+        <zone h='100000' id='2' type='layout-basic' w='100000' x='0' y='0'>
+          <zone h='98000' id='3' name='Sales-Customers Scatter' w='98400' x='800' y='1000'>
+            <zone-style>
+              <format attr='border-color' value='#000000' />
+              <format attr='border-style' value='none' />
+              <format attr='border-width' value='0' />
+              <format attr='margin' value='4' />
+            </zone-style>
+          </zone>
+          <zone-style>
+            <format attr='border-color' value='#000000' />
+            <format attr='border-style' value='none' />
+            <format attr='border-width' value='0' />
+            <format attr='margin' value='8' />
+          </zone-style>
+        </zone>
+      </zones>
+    </dashboard>
+    <dashboard name='Story' type='storyboard'>
+      <style />
+      <size maxheight='964' maxwidth='1016' minheight='964' minwidth='1016' />
+      <zones>
+        <zone h='100000' id='2' type='layout-basic' w='100000' x='0' y='0'>
+          <zone h='98340' id='1' param='vert' removable='false' type='layout-flow' w='98426' x='787' y='830'>
+            <zone h='3423' id='3' type='title' w='98426' x='787' y='830' />
+            <zone h='10477' id='4' is-fixed='true' paired-zone-id='5' removable='false' type='flipboard-nav' w='98426' x='787' y='4253' />
+            <zone h='84440' id='5' paired-zone-id='4' removable='false' type='flipboard' w='98426' x='787' y='14730'>
+              <flipboard active-id='3' nav-type='caption' show-nav-arrows='true'>
+                <story-points>
+                  <story-point caption='观察销量，人均销量，销量顾客数直方分布' captured-sheet='Sales Hists' id='1' />
+                  <story-point caption='销量-顾客数具有很强的正相关性' captured-sheet='Sales-Customers' id='2' />
+                  <story-point captured-sheet='仪表板 3' id='3' />
+                </story-points>
+              </flipboard>
+            </zone>
+          </zone>
+          <zone-style>
+            <format attr='border-color' value='#000000' />
+            <format attr='border-style' value='none' />
+            <format attr='border-width' value='0' />
+            <format attr='margin' value='8' />
+          </zone-style>
+        </zone>
+      </zones>
+    </dashboard>
+    <dashboard name='仪表板 3'>
+      <style />
+      <size maxheight='800' maxwidth='1000' minheight='800' minwidth='1000' />
+      <zones>
+        <zone h='100000' id='2' type='layout-basic' w='100000' x='0' y='0'>
+          <zone h='98000' id='5' param='horz' type='layout-flow' w='98400' x='800' y='1000'>
+            <zone h='98000' id='3' type='layout-basic' w='82400' x='800' y='1000'>
+              <zone h='98000' id='1' name='Store-Type Buble' w='82400' x='800' y='1000'>
+                <zone-style>
+                  <format attr='border-color' value='#000000' />
+                  <format attr='border-style' value='none' />
+                  <format attr='border-width' value='0' />
+                  <format attr='margin' value='4' />
+                </zone-style>
+              </zone>
+            </zone>
+            <zone fixed-size='160' h='98000' id='4' is-fixed='true' param='vert' type='layout-flow' w='16000' x='83200' y='1000'>
+              <zone h='13250' id='6' name='Store-Type Buble' pane-specification-id='0' param='[federated.0ink3yy1gvhjki184wc1w0x8st87].[none:StoreType:nk]' type='color' w='16000' x='83200' y='1000'>
+                <zone-style>
+                  <format attr='border-color' value='#000000' />
+                  <format attr='border-style' value='none' />
+                  <format attr='border-width' value='0' />
+                  <format attr='margin' value='4' />
+                </zone-style>
+              </zone>
+              <zone h='2750' id='7' name='Store-Type Buble' pane-specification-id='0' param='[federated.0ink3yy1gvhjki184wc1w0x8st87].[cnt:StoreType:qk]' type='size' w='16000' x='83200' y='14250'>
+                <zone-style>
+                  <format attr='border-color' value='#000000' />
+                  <format attr='border-style' value='none' />
+                  <format attr='border-width' value='0' />
+                  <format attr='margin' value='4' />
+                </zone-style>
+              </zone>
+            </zone>
+          </zone>
+          <zone-style>
+            <format attr='border-color' value='#000000' />
+            <format attr='border-style' value='none' />
+            <format attr='border-width' value='0' />
+            <format attr='margin' value='8' />
+          </zone-style>
+        </zone>
+      </zones>
+    </dashboard>
+    <dashboard name='仪表板 4'>
+      <style />
+      <size maxheight='800' maxwidth='1000' minheight='800' minwidth='1000' />
+      <zones>
+        <zone h='100000' id='2' type='layout-basic' w='100000' x='0' y='0'>
+          <zone h='98000' id='1' name='工作表 6' w='98400' x='800' y='1000'>
+            <zone-style>
+              <format attr='border-color' value='#000000' />
+              <format attr='border-style' value='none' />
+              <format attr='border-width' value='0' />
+              <format attr='margin' value='4' />
+            </zone-style>
+          </zone>
+          <zone-style>
+            <format attr='border-color' value='#000000' />
+            <format attr='border-style' value='none' />
+            <format attr='border-width' value='0' />
+            <format attr='margin' value='8' />
+          </zone-style>
+        </zone>
+      </zones>
+    </dashboard>
+    <dashboard name='仪表板 5'>
+      <style />
+      <size maxheight='800' maxwidth='1000' minheight='800' minwidth='1000' />
+      <zones />
+    </dashboard>
+  </dashboards>
+  <windows source-height='30'>
+    <window class='worksheet' name='Sales Hist'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+          <strip size='31'>
+            <card type='title' />
+          </strip>
+        </edge>
+      </cards>
+    </window>
+    <window class='worksheet' name='Sales Hist (2)'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+          <strip size='31'>
+            <card type='title' />
+          </strip>
+        </edge>
+      </cards>
+    </window>
+    <window class='worksheet' name='Sales Per Cumster Hist'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+          <strip size='31'>
+            <card type='title' />
+          </strip>
+        </edge>
+      </cards>
+    </window>
+    <window class='worksheet' name='Sales by Store Hist'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='title' />
+          </strip>
+        </edge>
+      </cards>
+      <viewpoint>
+        <default-map-tool-selection tool='2' />
+      </viewpoint>
+    </window>
+    <window class='worksheet' name='Sales-Customers Scatter'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='title' />
+          </strip>
+        </edge>
+      </cards>
+      <viewpoint>
+        <default-map-tool-selection tool='2' />
+      </viewpoint>
+    </window>
+    <window class='worksheet' name='Store-Type Buble'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+          <strip size='31'>
+            <card type='title' />
+          </strip>
+        </edge>
+        <edge name='right'>
+          <strip size='160'>
+            <card pane-specification-id='0' param='[federated.0ink3yy1gvhjki184wc1w0x8st87].[none:StoreType:nk]' type='color' />
+          </strip>
+        </edge>
+      </cards>
+    </window>
+    <window class='worksheet' name='工作表 6'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='title' />
+          </strip>
+        </edge>
+        <edge name='right'>
+          <strip size='160'>
+            <card pane-specification-id='0' param='[federated.0ink3yy1gvhjki184wc1w0x8st87].[none:StoreType:nk]' type='color' />
+          </strip>
+        </edge>
+      </cards>
+      <viewpoint>
+        <default-map-tool-selection tool='2' />
+      </viewpoint>
+    </window>
+    <window class='dashboard' name='Sales Hists'>
+      <viewpoints>
+        <viewpoint name='Sales Hist'>
+          <zoom type='entire-view' />
+        </viewpoint>
+        <viewpoint name='Sales Per Cumster Hist'>
+          <zoom type='entire-view' />
+        </viewpoint>
+        <viewpoint name='Sales by Store Hist'>
+          <zoom type='entire-view' />
+        </viewpoint>
+      </viewpoints>
+      <active id='-1' />
+    </window>
+    <window class='dashboard' name='Sales-Customers'>
+      <viewpoints>
+        <viewpoint name='Sales-Customers Scatter'>
+          <zoom type='entire-view' />
+        </viewpoint>
+      </viewpoints>
+      <active id='-1' />
+    </window>
+    <window class='dashboard' name='仪表板 3'>
+      <viewpoints>
+        <viewpoint name='Store-Type Buble' />
+      </viewpoints>
+      <active id='-1' />
+    </window>
+    <window class='dashboard' name='Story'>
+      <viewpoints />
+      <active id='5' />
+    </window>
+    <window class='dashboard' name='仪表板 4'>
+      <viewpoints>
+        <viewpoint name='工作表 6'>
+          <zoom type='entire-view' />
+        </viewpoint>
+      </viewpoints>
+      <active id='1' />
+    </window>
+    <window class='dashboard' name='仪表板 5'>
+      <viewpoints />
+      <active id='-1' />
+    </window>
+    <window class='worksheet' name='工作表 8'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+          <strip size='31'>
+            <card type='title' />
+          </strip>
+        </edge>
+        <edge name='right'>
+          <strip size='160'>
+            <card pane-specification-id='2' param='[federated.0ink3yy1gvhjki184wc1w0x8st87].[none:StoreType:nk]&#10;[federated.0ink3yy1gvhjki184wc1w0x8st87].[none:Forecast Indicator:nk]' type='color' />
+          </strip>
+        </edge>
+      </cards>
+    </window>
+    <window class='worksheet' maximized='true' name='工作表 9'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+          <strip size='31'>
+            <card type='title' />
+          </strip>
+        </edge>
+      </cards>
+    </window>
+  </windows>
+</workbook>
