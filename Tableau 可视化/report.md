@@ -15,6 +15,8 @@ Seven He
 
 我创建了一个Tableau故事，目的是通过可视化分析，观察众多特征对销量的影响程度，并对于其中重要特征做深入挖掘分析，以期发现更多潜在的规律，帮助后续的特征工程，模型设计、训练及融合。
 
+在线发布地址：https://public.tableau.com/views/story_final_17/Story
+
 
 
 
