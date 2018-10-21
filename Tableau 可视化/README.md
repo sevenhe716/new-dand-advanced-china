@@ -1,5 +1,17 @@
 # 说明文档
 
+### 背景
+
+自选数据集来自Kaggle竞赛，德国最大的日化用品超市Rossmann中1115家商店3年销量相关数据，目标是预测其中856家商店未来6周的日销量。
+
+影响销量的特征主要包括时间序列、商店分类、促销、竞争、节假日、地理位置等。
+
+我创建了一个Tableau故事，目的是通过可视化分析，观察众多特征对销量的影响程度，并对于其中重要特征做深入挖掘分析，以期发现更多潜在的规律。
+
+在线发布地址：https://public.tableau.com/views/story_final_17/Story
+
+
+
 ### 数据集来源
 
 数据集来自Kaggle Rossmann Store Sales竞赛，由于项目的重心是EDA分析，所以已经做了部分数据清洗和特征工程，原始数据集可以从Kaggle上[下载](https://www.kaggle.com/c/rossmann-store-sales/data)。
